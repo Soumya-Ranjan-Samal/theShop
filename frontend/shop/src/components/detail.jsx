@@ -122,6 +122,32 @@ function Detail(){
         });
     }
 
+    function handelAddToCart(){
+        let add = async ()=>{
+            await axios.post(`http://localhost:3000/user/cart/${Data._id}/add`,{},{
+                headers: {
+                    Authorization: `Barear ${localStorage.getItem("mytoken")}`
+                }
+            }).then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    alert('item added to cart sucessfuly');
+                    navigate('/cart')
+                }else{
+                    alert('something went wrong! please try later.');
+                }
+            });
+        }
+        if( Data.Available > 0 ){
+            setAsk({
+                text:  "Add this iteam to your cart ?",
+                fun: add,
+            });
+            return
+        }    
+        alert('Product is not in stock')
+    }
+
     function handelChange(e){
         let name = e.target.name== "size-medium" ? "rating" : e.target.name ;
         let value = e.target.value;
@@ -193,7 +219,7 @@ function Detail(){
                 <div className="row3 m-4 border border-white rounded-xl p-2">
                         <ButtonGroup  variant="contained" className="w-[100%]" aria-label="Basic button group">
                             <Button sx={{backgroundColor: "white", color: "black", width: "40%"}} endIcon={<ShoppingBagIcon/>} >Buy</Button>
-                            <Button sx={{backgroundColor: "white", color: "black", width: "60%"}}  endIcon={<ShoppingCartIcon/>}>Add to cart</Button>
+                            <Button sx={{backgroundColor: "white", color: "black", width: "60%"}} onClick={handelAddToCart} endIcon={<ShoppingCartIcon/>}>Add to cart</Button>
                         </ButtonGroup>
                 </div>
                 {

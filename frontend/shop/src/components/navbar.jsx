@@ -1,21 +1,39 @@
+import { useState, useEffect } from "react";
+import {useNavigate} from 'react-router-dom';
 import "../App.css"
 import StorefrontIcon from '@mui/icons-material/Storefront';
 
 function Navbar() {
 
-    
+    const [navCol, setNavCol] = useState('bg-[rgba(248,248,248,0.5)] shadow-lg');
+    const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 60) {
+        setNavCol('bg-[rgba(0,0,0,0.1)] shadow-xl border-black');
+      } else {
+        setNavCol('bg-[rgba(248,248,248,0.5)] shadow-xl');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+
     return (
       <>
-        <div className="nav  m-[0.1rem] rounded p-2 flex justify-center content-center">
+        <div className={"nav z-[10] m-[0.1rem] rounded p-2 flex justify-center content-center "+navCol} >
             <div className="name text-xl font-bold  pl-4 flex justify-baseline pt-1 w-1/3">
               <StorefrontIcon></StorefrontIcon><i>The Shop</i>
             </div>
             <div className="options w-1/3  flex m-2  content-center text-md font-semibold text-white justify-evenly">
-              <a href="" className="navop">Home</a>
-              
-                  <a href="" className="navop">Account</a>
-                  <a href="" className="navop">Cart</a>
-                  <a href="" className="navop">My Order</a>
+                  <a  className="navop" onClick={()=>{navigate('/')}}>Home</a>
+                  <a  className="navop">Account</a>
+                  <a  className="navop" onClick={()=>{navigate('/cart')}}>Cart</a>
+                  <a  className="navop">My Order</a>
                
               <a href="" className="navop">Search</a>
             </div>

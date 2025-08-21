@@ -187,6 +187,32 @@ app.post("/user/cart/:id/add",async (req,res)=>{
     }
 });
 
+app.delete('/user/cart/:id/remove',async (req,res)=>{
+    let token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+    if(!token){
+        res.status(400).send({
+            message: "Do log in first",
+            status: false
+        });
+    }
+    try{
+        const tokenData = jwt.verify(token, secret)
+        await User.findOneAndUpdate({_id: tokenData._id},{$pull: {cart: req.params.id}}).then(()=>{
+            res.status(200).send({
+                message: "Item removed",
+                status: true
+            });
+        })
+    }catch(error){
+        console.log(error);
+        res.status(400).send({
+            message: "Do log in first",
+            status: false,
+            det: error
+        });
+    }
+});
+
 app.get("/user/cart",async (req,res)=>{
     let token = req.headers.authorization && req.headers.authorization.split(" ")[1];
     if(!token){
@@ -209,7 +235,7 @@ app.get("/user/cart",async (req,res)=>{
             status: false,
         });
     }
-})
+});
 
 app.post("/seller/signup", async (req,res)=>{
     let data = req.body;
