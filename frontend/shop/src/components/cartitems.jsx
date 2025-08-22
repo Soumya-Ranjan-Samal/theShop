@@ -4,6 +4,7 @@ import { ButtonGroup, Button } from '@mui/material';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import Tooltip, { tooltipClasses }  from '@mui/material/Tooltip';
+import {useNavigate} from 'react-router-dom'
 import Confirm from "./confirm";
 import axios from 'axios';
 
@@ -22,6 +23,7 @@ function CartItemCard({ item, Data, setData }) {
 
   
     let [ask,setAsk] = useState();
+    const navigate = useNavigate();
 
 
   const increaseQty = ()=>{
@@ -41,8 +43,28 @@ function CartItemCard({ item, Data, setData }) {
   
 
   const handleBuy = () => {
-    // alert(`Buying ${quantity} x ${item.name} for ₹${item.price * quantity}`);
-    // You can replace this with actual checkout logic
+    const req = async ()=>{ 
+      await axios.post(`http://localhost:3000/order/${item._id}/${item.count}`,{},{
+        headers: {
+          Authorization: `bearer ${localStorage.getItem('mytoken')}`
+        }
+      }).then((res)=>{
+        console.log(res);
+        if(res.status == 200){
+          alert('Order placed successfuly');
+          setData(Data.filter((el)=> el._id != item._id))
+        }else{
+          alert('Something went wrong try latter!');
+        }
+      }).catch((error)=>{
+        console.log(error)
+        alert('Something went wrong');
+      })
+    }
+    setAsk({
+      text: "Great choice, Should we place order "+ item.name +" now",
+      fun: req,
+    });
   };
 
   const handelDiscard = () => {
@@ -54,7 +76,7 @@ function CartItemCard({ item, Data, setData }) {
       }).then((res)=>{
         if(res.status == 200){
           alert('Item is removed');
-          navigate('/cart')
+          setData(Data.filter((el)=> el._id != item._id));
         }else{
           alert('Something went wrong try latter!');
         }

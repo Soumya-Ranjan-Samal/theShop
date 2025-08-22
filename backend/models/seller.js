@@ -24,6 +24,10 @@ const sellerSchema = Schema({
     products: [{
         type: Schema.Types.ObjectId,
         ref: "Product"
+    }],
+    orders: [{
+        type: Schema.Types.ObjectId,
+        ref: "Order"
     }]
 });
 

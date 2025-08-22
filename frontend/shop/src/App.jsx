@@ -5,6 +5,7 @@ import Edit from "./pages/edit";
 import SignUpAndIn from "./pages/signUpAndIn";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Cart from "./pages/cart";
+import Orders from "./pages/orders";
 import "./app.css"
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/edit/:id" element={<Edit></Edit>}/>
           <Route path="/signupandsignin" element={<SignUpAndIn></SignUpAndIn>}/>
           <Route path="/cart" element={<Cart></Cart>}/>
+          <Route path="/orders" element={<Orders></Orders>}/>
         </Routes>
       </BrowserRouter>
     </>

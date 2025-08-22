@@ -33,7 +33,7 @@ function Navbar() {
                   <a  className="navop" onClick={()=>{navigate('/')}}>Home</a>
                   <a  className="navop">Account</a>
                   <a  className="navop" onClick={()=>{navigate('/cart')}}>Cart</a>
-                  <a  className="navop">My Order</a>
+                  <a  className="navop" onClick={()=>{navigate('/orders')}}>My Order</a>
                
               <a href="" className="navop">Search</a>
             </div>
