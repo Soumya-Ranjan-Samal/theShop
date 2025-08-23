@@ -44,6 +44,43 @@ function getOtp(){
     return Math.floor(Math.random()*10) * 1000 + Math.floor(Math.random()*10) * 100 + Math.floor(Math.random()*10) * 10 + Math.floor(Math.random()*10);
 }
 
+
+app.get('/check/person/state',async (req,res)=>{
+    let token = req.headers.authorization?.split(' ')[1];
+    if(!token){
+        res.send({state: ''});
+    }try{
+        let tokenData = jwt.verify(token, secret);
+        if(await User.findOne({_id: tokenData._id})){
+            return res.send({state: 'User'})
+        }
+        if(await Seller.findOne({_id: tokenData._id})){
+            return res.send({state: 'Seller'})
+        }
+    }catch(error){
+        console.log(error);
+        res.send({state: ''});
+    }
+});
+
+app.get('/user/account',async (req,res)=>{
+    let token = req.headers.authorization?.split(' ')[1];
+    if(!token){
+        res.send({message: 'Log in to visit account', state: false});
+    }try{
+        let tokenData = jwt.verify(token, secret);
+        await User.findOne({_id: tokenData._id}).then((data)=>{
+            res.send({data: data, state: true});
+        }).catch((error)=>{
+            console.log(error);
+            res.send({message: 'something went wrong please try later!', state: false})
+        })
+    }catch(error){
+        console.log(error);
+        res.send({message: 'Log in to visit account', state: false});
+    }
+})
+
 app.post("/otp/email",(req,res)=>{
     let email = req.body.email;
     let otp = getOtp();
@@ -121,7 +158,8 @@ app.post("/user/signup", async (req,res)=>{
                 res.status(200).send({
                     message: "Account creation successful",
                     state: true,
-                    token: token
+                    token: token,
+                    person: "User"
                 });
             }).catch((error)=>{
                 res.status(200).send({
@@ -150,7 +188,8 @@ app.post("/user/signin",async (req,res)=>{
             res.status(200).send({
                 message: "Account creation successful",
                 state: true,
-                token: token
+                token: token,
+                person: "User"
             });
         }else{
             res.status(200).send({
@@ -341,28 +380,28 @@ app.patch('/order/cancel/:orderId',async (req,res)=>{
 app.post("/user/cart/:id/add",async (req,res)=>{
     let token = req.headers.authorization && req.headers.authorization.split(" ")[1];
     if(!token){
-        res.send({
+        res.status(400).send({
             message: "Do login first",
             status: false
-        })
+        });
     }
     try{
         let tokenData = jwt.verify(token, secret);
         User.findOneAndUpdate({_id: tokenData._id},{$push: {cart: req.params.id}}).then(()=>{
-            res.send({
+            res.status(200).send({
                 message: "Item is added to cart",
                 status: true,
             });
         }).catch((error)=>{
-            res.send({
+            res.status(500).send({
                 message: "some error is occured in adding the item in to the cart",
                 status: false,
                 error
             });
         });
     }catch(error){
-        res.send({
-                message: "some error is occured in adding the item in to the cart",
+        res.status(400).send({
+                message: "DO login first",
                 status: false,
                 error
             });
@@ -453,7 +492,8 @@ app.post("/seller/signup", async (req,res)=>{
                     message: "Account creation successful",
                     state: true,
                     token: token,
-                    _id: result._id
+                    _id: result._id,
+                    person: "Seller"
                 });
             }).catch((error)=>{
                 res.status(200).send({
@@ -483,7 +523,8 @@ app.post("/seller/signin",async (req,res)=>{
                 message: "Account creation successful",
                 state: true,
                 token: token,
-                _id: user._id
+                _id: user._id,
+                person: "Seller"
             });
         }else{
             res.status(200).send({

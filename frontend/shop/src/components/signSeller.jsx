@@ -100,7 +100,7 @@ let verifyPhone = ()=>{
             }).then((res)=>{
                 if(res.data.state == true){
                     localStorage.setItem("mytoken",res.data.token);
-                    navigate("/");
+                    navigate(props.returnPath ? props.returnPath : "/");
                 }
                 alert(res.data.message);
             }).catch((error)=>{
@@ -117,7 +117,7 @@ let verifyPhone = ()=>{
             }).then((res)=>{
                 if(res.data.state == true){
                     localStorage.setItem("mytoken",res.data.token);
-                    navigate("/");
+                    navigate(props.returnPath ? props.returnPath : "/");
                 }
                 alert(res.data.message);
             }).catch((error)=>{

@@ -6,6 +6,7 @@ import SignUpAndIn from "./pages/signUpAndIn";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Cart from "./pages/cart";
 import Orders from "./pages/orders";
+import Useraccount from "./pages/userAccount";
 import "./app.css"
 
 function App() {
@@ -18,9 +19,10 @@ function App() {
           <Route path="/detail/:id" element={<Details></Details>}/>
           <Route path="/add" element={<Add></Add>} />
           <Route path="/edit/:id" element={<Edit></Edit>}/>
-          <Route path="/signupandsignin" element={<SignUpAndIn></SignUpAndIn>}/>
+          <Route path="/sign" element={<SignUpAndIn></SignUpAndIn>}/>
           <Route path="/cart" element={<Cart></Cart>}/>
           <Route path="/orders" element={<Orders></Orders>}/>
+          <Route path="/user/account" element={<Useraccount></Useraccount>}/>
         </Routes>
       </BrowserRouter>
     </>

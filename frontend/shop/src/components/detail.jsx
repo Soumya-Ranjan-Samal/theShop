@@ -129,14 +129,22 @@ function Detail(){
                     Authorization: `Barear ${localStorage.getItem("mytoken")}`
                 }
             }).then((res)=>{
-                console.log(res);
                 if(res.status == 200){
                     alert('item added to cart sucessfuly');
-                    navigate('/cart')
+                    navigate('/cart');
                 }else{
+                    if(res.data.message == 'DO login first'){
+                        navigate('/sign');
+                    }
                     alert('something went wrong! please try later.');
                 }
-            });
+            }).catch((error)=>{
+                if(error.status == 400){
+                    alert('Do login first')
+                    return navigate('/sign',{state: {from: "/detail/"+Data._id}});
+                }
+                alert('something went wrong! please try later.');
+            })
         }
         if( Data.Available > 0 ){
             setAsk({

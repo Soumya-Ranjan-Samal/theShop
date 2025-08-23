@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import Button from '@mui/material/Button';
 import { ButtonGroup } from '@mui/material';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
@@ -10,6 +11,9 @@ import Signseller from "../components/signSeller";
 import "../App.css"
 
 function SignUpAndIn(){
+
+    let location = useLocation();
+    let returnPath = location.state?.from;
 
     let [sign,setSign] = useState(false);
 
@@ -28,7 +32,7 @@ function SignUpAndIn(){
                 {
                     !sign &&
                 <div className="signarea">
-                        <Signbuyer />
+                        <Signbuyer returnPath={returnPath} />
                     <div className="text-center">
                         <ShoppingCartRoundedIcon sx={{fontSize: "20rem", color: "white"}}/>
                         <i><div className="text-white font-bold text-lg">
@@ -42,7 +46,7 @@ function SignUpAndIn(){
                 {
                     sign && 
                     <div className="signarea2">
-                        <Signseller/>
+                        <Signseller returnPath={returnPath} />
                         <div className="text-center">
                             <StoreRoundedIcon sx={{fontSize: "20rem", color: "white"}}/>
                             <i>
