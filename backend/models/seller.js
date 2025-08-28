@@ -29,6 +29,10 @@ const sellerSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: "Order"
     }],
+    address: {
+        type: String,
+        required: true
+    }
 });
 
 const Seller = model("Seller",sellerSchema);

@@ -1,49 +1,3 @@
-// import { IconButton } from "@mui/material";
-// import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRounded';
-// import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
-// import TextField from '@mui/material/TextField';
-// import Button from '@mui/material/Button';
-// import { useState, useEffect } from "react";
-// import Tooltip from '@mui/material/Tooltip';
-
-
-// function ModifiableData({data, name}){
-//     let [edit,setEdit] = useState(false);
-    
-//     return (
-//         <>
-//             <div className="d flex flex-col bg-gray-200 px-6 p-1 md:w-1/2 w-full min-w-[200px]  rounded-lg flex-shrink-0" >
-//                 <div className="flex justify-between">
-//                 <p><b>{name}: </b>{data}</p>
-//                 <Tooltip title={!edit? 'Edit': 'Cancel editing'}>
-//                 <IconButton size="small" onClick={() =>{setEdit((edit) => edit? false: true)}}  >
-//                     {
-//                         !edit &&
-//                     <ModeEditOutlineRoundedIcon />
-//                     }
-//                     {
-//                         edit && 
-//                     <CancelRoundedIcon/>
-//                     }
-//                 </IconButton>
-//                 </Tooltip>
-//                 </div>
-//                 {
-//                     edit &&
-//                         <div className="editbar flex m-2 justify-between">
-//                             <TextField id="filled-basic" className="w-2/3" label={"New "+name} size="small" variant="filled" />
-//                             <Button  class="bg-sky-500 text-white px-4 py-[0] rounded-lg" >
-//                                 Change
-//                             </Button>
-//                         </div>
-//                 }
-//             </div>
-//         </>
-//     )
-// }
-
-// export {ModifiableData}
-
 import { IconButton, Tooltip, TextField, Button } from "@mui/material";
 import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
@@ -57,7 +11,7 @@ function ModifiableData({ data, name }) {
       <div className="d flex flex-col bg-gray-200 px-6 p-1 md:w-1/2 w-full min-w-[200px] rounded-lg flex-shrink-0 transition-all duration-300">
 
         <div className="flex justify-between items-center">
-          <p><b>{name}: </b>{data}</p>
+          <p className="flex w-2/3 justify-between"><b>{name}: </b><span className="w-2/4 text-center">{data}</span></p>
           <Tooltip title={!edit ? 'Edit' : 'Cancel editing'}>
             <IconButton
               size="small"
@@ -82,7 +36,7 @@ function ModifiableData({ data, name }) {
               size="small"
               variant="filled"
             />
-            <Button  class="bg-sky-500 text-white px-4 py-3 rounded-lg" >
+            <Button className="bg-sky-500 text-white px-4 py-3 rounded-lg" >
              Change
             </Button>
           </div>

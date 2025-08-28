@@ -7,6 +7,9 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Cart from "./pages/cart";
 import Orders from "./pages/orders";
 import Useraccount from "./pages/userAccount";
+import Selleraccount from "./pages/sellerAccount";
+import SellerProducts from "./pages/sellerProducts";
+import { SellorOrders } from "./pages/sellerOrders";
 import "./app.css"
 
 function App() {
@@ -23,6 +26,9 @@ function App() {
           <Route path="/cart" element={<Cart></Cart>}/>
           <Route path="/orders" element={<Orders></Orders>}/>
           <Route path="/user/account" element={<Useraccount></Useraccount>}/>
+          <Route path="/seller/account" element={<Selleraccount></Selleraccount>}/>
+          <Route path="/seller/products" element={<SellerProducts></SellerProducts>}/>
+          <Route path="/seller/orders" element={<SellorOrders></SellorOrders>}/>
         </Routes>
       </BrowserRouter>
     </>

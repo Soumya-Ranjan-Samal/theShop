@@ -12,7 +12,7 @@ function Confirm(props){
                     <p className='p-6 bg-[rgba(1,1,1,0.3)] rounded-md'>{props.text}</p>
                     <ButtonGroup variant="contained" className="w-[100%]" aria-label="Basic button group">
                             <Button sx={{backgroundColor: "red", color: "white", width: "50%"}} endIcon={<ClearRoundedIcon/>} onClick={()=>props.cancel(false)} >NO</Button>
-                            <Button sx={{backgroundColor: "green", color: "white", width: "50%"}}  endIcon={<DoneRoundedIcon/>} onClick={()=>{props.fun()}}>YES</Button>
+                            <Button sx={{backgroundColor: "green", color: "white", width: "50%"}}  endIcon={<DoneRoundedIcon/>} onClick={()=>{props.fun();props.cancel(false)}}>YES</Button>
                     </ButtonGroup>
                 </div>
             </div>

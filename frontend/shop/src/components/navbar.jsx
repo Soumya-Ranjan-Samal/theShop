@@ -48,9 +48,11 @@ function Navbar() {
                   <a  className="navop" onClick={()=>{navigate('/')}}>Home</a>
 
                   {
-                     personState=='User' &&
+                     personState=='Seller' &&
                     <>
-                      <a  className="navop" onClick={()=>navigate('/user/account')} >Account</a>
+                      <a  className="navop" onClick={()=>navigate('/seller/account')} >Account</a>
+                      <a  className="navop" onClick={()=>{navigate('/seller/products')}}>My Products</a>
+                      <a  className="navop" onClick={()=>{navigate('/seller/orders')}}>Orders</a>
                     </>
                   }
                   
@@ -58,6 +60,7 @@ function Navbar() {
                   {
                     personState == 'User' &&
                     <>
+                      <a  className="navop" onClick={()=>navigate('/user/account')} >Account</a>
                       <a  className="navop" onClick={()=>{navigate('/cart')}}>Cart</a>
                       <a  className="navop" onClick={()=>{navigate('/orders')}}>My Order</a>
                     </>
@@ -67,6 +70,7 @@ function Navbar() {
                     personState == '' &&
                     <>
                       <a  className="navop" onClick={()=>{navigate('/sign')}}>Sign up</a>
+                      <a  className="navop" onClick={()=>{navigate('/sign')}}>Sign In</a>
                     </>
                   }
                
