@@ -32,8 +32,8 @@ function SignUpAndIn(){
                 {
                     !sign &&
                 <div className="signarea">
-                        <Signbuyer returnPath={returnPath} />
-                    <div className="text-center">
+                    <Signbuyer returnPath={returnPath} />
+                    <div className="text-center md:relative fixed z-0">
                         <ShoppingCartRoundedIcon sx={{fontSize: "20rem", color: "white"}}/>
                         <i><div className="text-white font-bold text-lg">
                             <p>Welcome to The Shop</p>
@@ -47,7 +47,7 @@ function SignUpAndIn(){
                     sign && 
                     <div className="signarea2">
                         <Signseller returnPath={returnPath} />
-                        <div className="text-center">
+                        <div className="text-center md:relative fixed z-0">
                             <StoreRoundedIcon sx={{fontSize: "20rem", color: "white"}}/>
                             <i>
                                 <div className="text-white font-bold text-lg">

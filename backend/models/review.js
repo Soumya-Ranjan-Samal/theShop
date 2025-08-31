@@ -1,10 +1,10 @@
 import mongoose, {Schema, model} from "mongoose";
 
 const reviewSchema = Schema({
-    // userId: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User"
-    // },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
     comment: {
         type: String,
     },

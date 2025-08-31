@@ -12,16 +12,16 @@ function SellerOrderCard({ order, setAllOrder }) {
   const [ask, setAsk] = useState(false);
   const [dataToUpdate, setDataToUpdate] = useState({
     deliveryDate : order.deliveryDate,
-    state: order.status
+    state: order.status,
+    otp: ''
   });
   const [otp, setOtp] = useState();
-  const [otpValue, setOtpValue] = useState();
   const [otpColor, setOtpColor] = useState(true);
 
   function handelChange(el){
     if(el.target.name == 'state' && el.target.value == 'Delivered'){
       setOtp(true);
-    }else{
+    }else if(el.target.name == 'state' && el.target.value != 'Delivered'){
       setOtp(false)
     }
     setDataToUpdate({...dataToUpdate,[el.target.name]: el.target.value });
@@ -52,13 +52,13 @@ function SellerOrderCard({ order, setAllOrder }) {
 
   function handelUpdate(){
     let req = async ()=>{
-      if(dataToUpdate.state == 'Delivered' && !otpValue){
+      if(dataToUpdate.state == 'Delivered' && dataToUpdate.otp.length == 0){
         alert('Otp field is required');
         setOtpColor(false);
         return;
       }
       await axios.patch(`http://localhost:3000/seller/order/${order._id}/update`, {
-        ...dataToUpdate
+        ...dataToUpdate,
       },{
         headers: {
           Authorization: `bearer ${localStorage.getItem('mytoken')}`,
@@ -131,7 +131,7 @@ function SellerOrderCard({ order, setAllOrder }) {
         </span>
 
         <div className="flex gap-2">
-          {!order.isCancelled && (
+          {!order.isCancelled && order.status != 'Delivered' && (
             <>
             {
               !state &&
@@ -175,7 +175,7 @@ function SellerOrderCard({ order, setAllOrder }) {
               otp &&
             <div className="flex item-center justify-between text-gray-400">
               <label htmlFor="otp">Otp from Buyer:</label>
-              <input type="number" name="otp" placeholder="Please enter the otp that buyer has" value={otpValue} onChange={(el) => {setOtpValue(el.value);setOtpColor(true)}} className={"border  p-2 rounded-lg w-2/3 " + (otpColor ? "border-blue-600 bg-blue-100 text-blue-600": "border-red-600 bg-red-100 text-red-600 ")} />
+              <input type="number" name="otp" placeholder="Please enter the otp that buyer has"  onChange={handelChange} value={dataToUpdate.otp} className={"border  p-2 rounded-lg w-2/3 " + (otpColor ? "border-blue-600 bg-blue-100 text-blue-600": "border-red-600 bg-red-100 text-red-600 ")} />
             </div>
             }
           </>

@@ -100,6 +100,7 @@ let verifyPhone = ()=>{
             }).then((res)=>{
                 if(res.data.state == true){
                     localStorage.setItem("mytoken",res.data.token);
+                    localStorage.setItem('_id', res.data._id);
                     navigate(props.returnPath ? props.returnPath : "/");
                 }
                 alert(res.data.message);
@@ -117,6 +118,8 @@ let verifyPhone = ()=>{
             }).then((res)=>{
                 if(res.data.state == true){
                     localStorage.setItem("mytoken",res.data.token);
+                    localStorage.setItem('person',res.data.person);
+                    localStorage.setItem('_id', res.data._id);
                     navigate(props.returnPath ? props.returnPath : "/");
                 }
                 alert(res.data.message);
@@ -133,7 +136,7 @@ let verifyPhone = ()=>{
 
     let transition = ()=>{
         let card = document.querySelector(".signCardForBuyers");
-        card.style.left = "110%";
+        card.style.left = "220%";
         setTimeout(()=>{
             setSign(sign? false : true);
             card.style.left = "0";
@@ -142,7 +145,7 @@ let verifyPhone = ()=>{
 
     return (
         <>
-            <div className="signCardForBuyers bg-white p-6 md:w-1/3 w-full rounded-lg flex flex-col items-center justify-center">
+            <div className="z-10 signCardForBuyers bg-white p-6 md:w-1/3 w-full rounded-lg flex flex-col items-center justify-center">
                 <h1 className="text-lg font-bold">{sign? "Sign Up" : "Sign In"}</h1>
                 {
                     sign &&
@@ -153,7 +156,7 @@ let verifyPhone = ()=>{
                     <div className="row1 w-full flex flex-col m-2">
                         <TextField id="standard-basic" name='companyName' value={form.companyName} onChange={updatefun} label="Your Shop Name / Company Name" variant="standard" />
                     </div>
-                <div className="row2 w-full flex md:flex-row flex-col items-center justify-center  m-2">
+                <div className="row2 w-full flex flex-row items-center justify-center  m-2">
                     <TextField
                         id="standard-select-currency"
                         select

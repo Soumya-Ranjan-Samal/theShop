@@ -70,7 +70,20 @@ app.patch('/seller/order/:id/update',async (req,res)=>{
     }try{
         let tokenData = jwt.verify(token, secret);
         let {state, deliveryDate} = req.body;
-        await Order.findOneAndUpdate({_id: req.params.id},{status: state, deliveryDate: deliveryDate}).then((result)=>{
+
+        let order = await Order.findOne({_id: req.body.id});
+        if(state == 'Delivered'){
+            opt = req.body.otp;
+            if(otp != order.Otp){
+                return res.status(400).send({
+                    message: "Invalid OTP",
+                    status: false
+                });
+            }
+        }
+        order.status = state;
+        order.deliveryDate = deliveryDate;
+        await order.save().then((result)=>{
             res.status(200).send({
                 message: 'Updation successful',
                 state: true
@@ -112,7 +125,6 @@ app.get('/seller/account',async (req,res)=>{
     }try{
         let tokenData = jwt.verify(token, secret);
         await Seller.findOne({_id: tokenData._id}).then((data)=>{
-            console.log(data);
             res.send({data: data, state: true});
         }).catch((error)=>{
             console.log(error);
@@ -232,7 +244,8 @@ app.post("/user/signup", async (req,res)=>{
                     message: "Account creation successful",
                     state: true,
                     token: token,
-                    person: "User"
+                    person: "User",
+                    _id: result._id
                 });
             }).catch((error)=>{
                 res.status(200).send({
@@ -259,10 +272,11 @@ app.post("/user/signin",async (req,res)=>{
                 _id: user._id,
             },secret,{expiresIn: "12h"});
             res.status(200).send({
-                message: "Account creation successful",
+                message: "Welcome back "+user.username,
                 state: true,
                 token: token,
-                person: "User"
+                person: "User",
+                _id: user._id
             });
         }else{
             res.status(200).send({
@@ -593,7 +607,7 @@ app.post("/seller/signin",async (req,res)=>{
                 _id: user._id,
             },secret,{expiresIn: "12h"});
             res.status(200).send({
-                message: "Account creation successful",
+                message: "Welcome Back "+user.username,
                 state: true,
                 token: token,
                 _id: user._id,
@@ -617,32 +631,103 @@ app.get("/catagory/:value",async (req,res)=>{
 });
 
 app.delete("/products/:id/review/:rid",async (req,res)=>{
-    await Product.updateOne({_id: req.params.id},{$pull : {review: req.params.rid}}).then(async (result)=>{
-        await Review.deleteOne({_id: req.params.rid}).then(()=>{
-            res.status(200).send({success: "ok"})
-        }).catch((error)=>{
-            res.status(500).send({error: "error in deleteing the review from review collection", details: error});
+    let token = req.headers?.authorization?.split(' ')[1];
+    if(!token){
+        return  res.status(400).send({
+            message: 'Do log in first',
+            status: false
         });
-    }).catch((error)=>{
-        res.status(500).send({error: "some error occured in removing review from product review list", details: error});
-    });
+    }
+    try{
+        let tokenData = jwt.verify(token, secret);
+        
+        let review = await Review.findOneAndDelete({_id: req.params.rid, userId: tokenData._id});
+        if(!review){
+            returres.status(400).send({
+                message: 'You are not the reviewer',
+                status: false,
+            });
+        }
+        await Product.findOneAndUpdate({_id: req.params.id},{$pull: {review: review._id}}).then(()=>{
+            res.status(200).send({success: "ok"});
+        }).catch((error)=>{
+            res.status(500).send({error: "some error occured in removing review from product review list", details: error});
+        });
+    }catch(error){
+        console.log(error);
+        res.status(400).send({
+            message: "Do log in first",
+            status: false,
+        });
+    }
 });
 
 app.post("/products/:id/review",async (req,res)=>{
-    let review = await Review({
-        ...req.body
-    });
-    await review.save().then(async (result)=>{
-        await Product.updateOne({_id: req.params.id},{$push: {review: result._id}}).then((result2)=>{
-            res.status(200).send(result2);
+    let token = req.headers?.authorization.split(' ')[1]
+    if(! token){
+        res.status(400).send({
+            message: 'You are not loged in',
+            status: false
+        })
+    }
+    try{
+        let tokenData = jwt.verify(token, secret);
+        
+        let userInfo = await User.findOne({_id: tokenData._id}).select('order').populate({path: 'order', select: 'status productId'});
+        let check = false;
+
+        for(const el of userInfo.order){
+            if(el.productId == req.params.id && el.status == 'Delivered'){
+                check = true;
+                break;
+            }
+        }
+        if(check == false){
+            return res.status(400).send({
+                message: 'You have to Buy this before giving any feedback',
+                status: false
+            });
+        }
+        let review = Review({
+            ...req.body,
+            userId: userInfo._id,
+        });
+        await review.save().then(async (result)=>{
+            await Product.updateOne({_id: req.params.id},{$push: {review: result._id}}).then((result2)=>{
+                return res.status(200).send(result2);
+            }).catch((error)=>{
+                console.log(error);
+                return res.status(500).send({error: "error in updating the product review", deatils: error});
+            });
         }).catch((error)=>{
             console.log(error);
-            res.status(500).send({error: "error in updating the product review", deatils: error});
+            return res.status(500).send({error: "error in creating a new review", details: error});
         });
-    }).catch((error)=>{
-            console.log(error);
-            res.status(500).send({error: "error in creating a new review", details: error});
-    });
+    }
+    catch(error){
+        console.log('Error in creating a review ',error);
+        res.status(400).send({
+            message: 'You are not loged in',
+            status: false
+        });
+    }
+
+    res.status(200).send('hello beautifull');
+
+    // let review = await Review({
+    //     ...req.body
+    // });
+    // await review.save().then(async (result)=>{
+    //     await Product.updateOne({_id: req.params.id},{$push: {review: result._id}}).then((result2)=>{
+    //         res.status(200).send(result2);
+    //     }).catch((error)=>{
+    //         console.log(error);
+    //         res.status(500).send({error: "error in updating the product review", deatils: error});
+    //     });
+    // }).catch((error)=>{
+    //         console.log(error);
+    //         res.status(500).send({error: "error in creating a new review", details: error});
+    // });
 });
 
 
@@ -688,7 +773,7 @@ app.patch("/products/:id",async (req,res)=>{
 });
 
 app.get("/products/:id",async (req,res)=>{
-    await Product.findOne({_id: req.params.id}).populate("review").then((result)=>{
+    await Product.findOne({_id: req.params.id}).populate({path: "review", populate: {path: 'userId', select: 'username'}}).then((result)=>{
         let avgrating = 0;
         let len = result.review.length;
         for(let i=0;i<len;i++){

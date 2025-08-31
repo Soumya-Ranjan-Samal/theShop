@@ -26,7 +26,7 @@ function Signbuyer(props){
 
     let transition = ()=>{
         let card = document.querySelector(".signCardForBuyers");
-        card.style.left = "-110%";
+        card.style.left = "-220%";
         setTimeout(()=>{
             setSign(sign? false : true);
             card.style.left = "0";
@@ -106,6 +106,7 @@ let verifyPhone = ()=>{
             }).then((res)=>{
                 if(res.data.state == true){
                     localStorage.setItem("mytoken",res.data.token);
+                    localStorage.setItem('_id', res.data._id);
                     navigate(props.returnPath ? props.returnPath : "/");
                 }
                 alert(res.data.message);
@@ -123,6 +124,7 @@ let verifyPhone = ()=>{
             }).then((res)=>{
                 if(res.data.state == true){
                     localStorage.setItem("mytoken",res.data.token);
+                    localStorage.setItem('_id', res.data._id);
                     navigate(props.returnPath ? props.returnPath : "/");
                 }
                 alert(res.data.message);
@@ -139,7 +141,7 @@ let verifyPhone = ()=>{
 
     return (
         <>
-            <div className="signCardForBuyers bg-white p-6 md:w-1/3 w-full rounded-lg flex flex-col items-center justify-center">
+            <div className=" z-20 signCardForBuyers bg-white p-6 md:w-1/3 w-full rounded-lg flex flex-col items-center justify-center">
                 <h1 className="text-lg font-bold">{sign? "Sign Up" : "Sign In"}</h1>
                 {
                     sign &&
@@ -147,7 +149,7 @@ let verifyPhone = ()=>{
                     <div className="row1 w-full flex flex-col m-2">
                         <TextField id="standard-basic" name='username' value={form.username} onChange={updatefun} label="Your Full Name" variant="standard" />
                     </div>
-                <div className="row2 w-full flex md:flex-row flex-col items-center justify-center  m-2">
+                <div className="row2 w-full flex flex-row items-center justify-center  m-2">
                     <TextField
                         id="standard-select-currency"
                         select
@@ -203,7 +205,7 @@ let verifyPhone = ()=>{
                 </>
                 }
                 <div className="row7 w-full flex flex-col m-2">
-                    <TextField id="standard-basic" name='password' value={form.password} onChange={updatefun} label={sign?"Give a Strong Password":"Your Password"} variant="standard" />
+                    <TextField id="standard-basic" type='password' name='password' value={form.password} onChange={updatefun} label={sign?"Give a Strong Password":"Your Password"} variant="standard" />
                 </div>
                 <div className="row8 flex flex-col m-2">
                     <Button variant="outlined" sx={{backgroundColor: "black", color: "rgba(255,255,255,0.7)"}} onClick={sign ? signUp : signIn } >{ sign ? "Sign Up" : "Sign In"}</Button>

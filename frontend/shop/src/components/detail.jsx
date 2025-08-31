@@ -35,8 +35,7 @@ function Detail(){
     });
     let [ask,setAsk] = useState();
 
-    useEffect(()=>{
-        let getData = async ()=>{
+    let getData = async ()=>{
             await axios.get("http://localhost:3000/products/"+params.id,{
                 headers: {
                     Authorization: `bearer ${localStorage.getItem("mytoken")}`
@@ -47,6 +46,8 @@ function Detail(){
                 console.log(error);
             });
         }
+
+    useEffect(()=>{
         getData();
     },[]);
 
@@ -76,10 +77,15 @@ function Detail(){
         let send = async ()=>{
             await axios.post(`http://localhost:3000/products/${params.id}/review`,{
                 ...reviewData
+            },{
+                headers: {
+                    Authorization: `bearer ${localStorage.getItem('mytoken')}`
+                }
             }).then((res)=>{
-                window.location.reload();
+                getData();
             }).catch((error)=>{
                 console.log(error);
+                alert(error.response.data.details._message);
             });
         }
         setAsk({
@@ -110,8 +116,12 @@ function Detail(){
 
     function handelDeleteReview(id){
         let del = async ()=>{
-            await axios.delete(`http://localhost:3000/products/${Data._id}/review/${id}`).then((res)=>{
-                window.location.reload();
+            await axios.delete(`http://localhost:3000/products/${Data._id}/review/${id}`,{
+                headers: {
+                    Authorization: `bearer ${localStorage.getItem('mytoken')}`
+                }
+            }).then((res)=>{
+                getData();
             }).catch((error)=>{
                 console.log(error);
             });
@@ -122,7 +132,7 @@ function Detail(){
         });
     }
 
-    function handelAddToCart(){
+    function handelAddToCart(go){
         let add = async ()=>{
             await axios.post(`http://localhost:3000/user/cart/${Data._id}/add`,{},{
                 headers: {
@@ -131,7 +141,9 @@ function Detail(){
             }).then((res)=>{
                 if(res.status == 200){
                     alert('item added to cart sucessfuly');
-                    navigate('/cart');
+                    if( go ){
+                        navigate('/cart');
+                    }   
                 }else{
                     if(res.data.message == 'DO login first'){
                         navigate('/sign');
@@ -148,7 +160,7 @@ function Detail(){
         }
         if( Data.Available > 0 ){
             setAsk({
-                text:  "Add this iteam to your cart ?",
+                text:  "Add this iteam to your cart to buy ?",
                 fun: add,
             });
             return
@@ -165,14 +177,14 @@ function Detail(){
 
     return (
         <>
-            <div className="main">
+            <div className="main md:w-full md:p-0 p-2 w-[99%]">
                 <div className="row1 flex justify-evenly">
-                    <div className="w-1/3"><button className="back" onClick={()=>{navigate("/")}} ><ArrowBackIcon></ArrowBackIcon></button></div>
-                    <span className="name2 font-bold w-1/3 text-2xl text-white ">{Data.name}</span>
-                    <div className="w-1/3" ></div>
+                    <div className="md:w-1/3"><button className="back" onClick={()=>{navigate("/")}} ><ArrowBackIcon></ArrowBackIcon></button></div>
+                    <span className="name2 font-bold md:w-1/3 md:text-2xl text-white ">{Data.name}</span>
+                    <div className="md:w-1/3" ></div>
                 </div>
-                <div className="row2 w-full flex">
-                    <div className="w-[75%]">
+                <div className="row2 w-full flex flex-col md:flex-row">
+                    <div className="md:w-[75%]">
                         <div className="pictures">
                             <div>
                                 <IconButton sx={buttonstyle} onClick={()=>changepic(-1)} >
@@ -200,7 +212,7 @@ function Detail(){
                         </div>
                     </div>
                 
-                    <div className="debts border border-white p-6 rounded-4xl  text-white w-[25%] text-xl m-4 ml-0">
+                    <div className="debts border border-white p-6 rounded-4xl  text-white md:w-[25%] text-xl m-4 ml-0">
                         <p>{Data.name}</p>
                         <p className="text-sm">Barnd {Data.ProductSheller}</p>
                         <p> {Data.Available} Units Available </p>
@@ -224,23 +236,33 @@ function Detail(){
                         </span>
                     </div>
                 </div>
-                <div className="row3 m-4 border border-white rounded-xl p-2">
+                {
+                    localStorage.getItem('person') != 'Seller' && 
+                    <div className="row3 m-4 border border-white rounded-xl p-2">
                         <ButtonGroup  variant="contained" className="w-[100%]" aria-label="Basic button group">
-                            <Button sx={{backgroundColor: "white", color: "black", width: "40%"}} endIcon={<ShoppingBagIcon/>} >Buy</Button>
-                            <Button sx={{backgroundColor: "white", color: "black", width: "60%"}} onClick={handelAddToCart} endIcon={<ShoppingCartIcon/>}>Add to cart</Button>
+                            <Button sx={{backgroundColor: "white", color: "black", width: "40%"}} onClick={()=>handelAddToCart(true)}  endIcon={<ShoppingBagIcon/>} >Buy</Button>
+                            <Button sx={{backgroundColor: "white", color: "black", width: "60%"}} onClick={()=>handelAddToCart(false)} endIcon={<ShoppingCartIcon/>}>Add to cart</Button>
                         </ButtonGroup>
-                </div>
+                    </div>
+                }
                 {
                 Data.tokenData == true &&
-                (<div className="selleroption bg-black row3 m-4 w-[50%] border border-black rounded-xl p-2">
-                        <ButtonGroup variant="contained" className="w-[100%]" aria-label="Basic button group">
+
+                (
+                    <>
+                    <hr className="text-white m-4"></hr>
+                    <div className="ml-2 md:w-1/2  bg-purple-100 text-purple-600 rounded-full p-4">It's Your Product, you can edit and remove this from your inventory</div>
+                    <div className="selleroption bg-black row3 m-4 md:w-1/2 border border-white rounded-xl p-2">
+                        <ButtonGroup variant="contained" className="w-full" aria-label="Basic button group">
                             <Button onClick={()=>{navigate(`/edit/${Data._id}`)}} sx={{backgroundColor: "yellow", color: "black", width: "50%"}} endIcon={<EditNoteRoundedIcon/>} >Edit item details</Button>
                             <Button onClick={handelDeleteProduct} sx={{backgroundColor: "red", color: "white", width: "50%"}}  endIcon={<DeleteIcon/>}>Delete item from inventory</Button>
                         </ButtonGroup>
-                </div>)
+                </div>
+                </>
+                )
                 }
-                <div className="row4 flex m-4 border border-white justify-between align-center p-4 rounded-xl">
-                    <div className=" border border-white rounded-lg w-[30%] p-8">
+                <div className="row4 flex md:flex-row flex-col  m-4 border border-white justify-between align-center p-4 rounded-xl">
+                    <div className=" border border-white rounded-lg md:w-1/3 p-8">
                         <span className="text-xl text-white">Ratings by buyers: </span>
                         <div>
                             <Stack>
@@ -251,7 +273,7 @@ function Detail(){
                             </Stack>
                         </div>
                     </div>
-                    <form className="giverevire w-[70%]   flex flex-col">
+                    <form className="giverevire md:w-2/3  flex flex-col">
                         <label htmlFor="revirew" className="text-white m-2">Some review</label>
                         <Rating name="size-medium" id="rating" value={reviewData.rating} onChange={handelChange} />
                         <span className="flex">
@@ -269,19 +291,22 @@ function Detail(){
                             {
                                 Data.review.map((rev)=>{
                                     return (
-                                        <div className="revcard border border-gray-100 p-4 m-2 rounded-md text-gray-200 w-[30%]">
+                                        <div className="revcard border border-gray-100 p-4 m-2 rounded-md text-gray-200 w-full md:w-[30%]">
                                             <div className="line1">
                                                 <Rating  name="size-medium" defaultValue={rev.rating}  readOnly />
                                                 <span className="relative top-[-5px]">
-                                                    - By Jorden huskey
+                                                    - By {rev.userId?.username}
                                                 </span>
                                             </div>
                                            <div className="line2">
                                                 <p>{rev.comment}</p>
                                            </div>
+                                           {
+                                            rev.userId?._id == localStorage.getItem('_id') && 
                                            <div className="line3">
                                                 <Button sx={{backgroundColor: "rgb(10,10,10,0.7)", color: "gray"}} onClick={()=>handelDeleteReview(rev._id)} endIcon={<DeleteIcon/>} >Delete</Button>
                                            </div>
+                                            }
                                         </div>
                                     )
                                 })

@@ -8,6 +8,7 @@ function SellerOrderDash(){
 
     const [Data, setData] = useState();
     const [ordersData, setOrdersData] = useState();
+    const [filter, setFilter] = useState('Pendings') 
 
     useEffect(()=>{
             const req = async ()=>{
@@ -39,7 +40,10 @@ function SellerOrderDash(){
             return "Good Evening "
     }
 
-    let buttonstyle = "p-2 rounded-t-lg"
+    function handelChange(el){
+        setFilter(el.target.value);
+    }
+
 
     return (
         <>
@@ -49,10 +53,29 @@ function SellerOrderDash(){
                 <span className="name2 font-bold md:w-1/3 w-3/4 md:text-3xl text-xl text-white mt-2">{greetings()} {Data?.username?.split(' ')[0]}, Here are the orders for you products</span>
                 <div className="w-1/3" ></div>
             </div>
+
+            <div className=" md:w-1/2 w-full m-4 flex justify-around  rounded-full">
+                <button value={"Pendings"} onClick={handelChange} className={ "p-2 border border-white w-1/3 rounded-l-full hover:text-yellow-500 hover:shadow-xl shadow-yellow-500" + (filter == 'Pendings' ? ' bg-white text-black' : ' bg-black text-white' )} >Pendings</button>
+                <button value={"Delivered"} onClick={handelChange} className={ "p-2 border border-white w-1/3 hover:text-blue-500 hover:shadow-xl shadow-blue-500" + (filter == 'Delivered' ? ' bg-white text-black' : ' bg-black text-white' )}>Delivered</button>
+                <button value={"Canceled"} onClick={handelChange} className={ "p-2 border border-white w-1/3 hover:text-red-500 rounded-r-full hover:shadow-xl shadow-red-500" + (filter == 'Canceled' ? ' bg-white text-black' : ' bg-black text-white' )}>Canceled</button>
+            </div>
             
             <div className="data mt-20 flex flex-col md:flex-row flex-wrap justify-evenly w-full">
-                    {
-                        ordersData?.map((el)=>{
+                    {   
+                        filter == "Pendings" &&
+                        ordersData?.filter((el)=>el.status != "Delivered" && !el.isCancelled ).map((el)=>{
+                            return <SellerOrderCard order={el}  setAllOrder={setOrdersData}></SellerOrderCard>
+                        })
+                    }
+                    {   
+                        filter == "Delivered" &&
+                        ordersData?.filter((el)=>el.status == "Delivered" && !el.isCancelled ).map((el)=>{
+                            return <SellerOrderCard order={el}  setAllOrder={setOrdersData}></SellerOrderCard>
+                        })
+                    }
+                    {   
+                        filter == "Canceled" &&
+                        ordersData?.filter((el)=> el.isCancelled ).map((el)=>{
                             return <SellerOrderCard order={el}  setAllOrder={setOrdersData}></SellerOrderCard>
                         })
                     }

@@ -3,14 +3,19 @@ import {useNavigate} from 'react-router-dom';
 import "../App.css"
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import axios from "axios";
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { AnimatePresence, motion } from "framer-motion";
 
 function Navbar() {
 
     const [navCol, setNavCol] = useState('bg-[rgba(248,248,248,0.5)] shadow-lg');
     const [personState,setPersonState] = useState("");
+    const [menu, setMenu] = useState(false);
     const navigate = useNavigate();
 
   useEffect(() => {
+    (window.innerWidth > 500 ? setMenu(true): setMenu(false) )
     const handleScroll = () => {
       if (window.scrollY > 60) {
         setNavCol('bg-[rgba(0,0,0,0.1)] shadow-xl border-black');
@@ -28,6 +33,7 @@ function Navbar() {
         }
       }).then((data)=>{
         setPersonState(data.data.state)
+        localStorage.setItem('person', data.data.state);
       }).catch((error)=>{
         console.log(error);
       });
@@ -37,18 +43,24 @@ function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
     return (
       <>
-        <div className={"nav z-[10] m-[0.1rem] rounded p-2 flex justify-center content-center "+navCol} >
-            <div className="name text-xl font-bold  pl-4 flex justify-baseline pt-1 w-1/3">
+        <div className={ ( menu && window.innerWidth<500 ? 'h-36': 'h-16') + " md:h-full transition-all duration-300 nav z-[10] m-[0.1rem] rounded p-2 flex md:justify-center md:content-center "+navCol} >
+            <div className="name md:text-xl font-bold  pl-4 md:m-0 m-2 flex justify-baseline pt-1 md:w-1/3 w-1/2">
               <StorefrontIcon></StorefrontIcon><i>The Shop</i>
             </div>
-            <div className="options w-1/3  flex m-2  content-center text-md font-semibold text-white justify-evenly">
+
+            <div onClick={()=>setMenu(menu ? false : true )} className="menu md:opacity-0 fixed top-2 left-[85%] bg-white rounded-full p-2">
+              {menu ? <CloseRoundedIcon></CloseRoundedIcon> : <MenuRoundedIcon></MenuRoundedIcon>}
+            </div>
+
+            {
+              menu &&
+              <div className={ "options md:w-1/3 w-[50%] md:me-[0%] mr-[40%] flex md:flex-row  flex-col m-2  content-center md:text-md font-semibold text-white justify-evenly"}>
                   <a  className="navop" onClick={()=>{navigate('/')}}>Home</a>
 
                   {
-                     personState=='Seller' &&
+                    personState=='Seller' &&
                     <>
                       <a  className="navop" onClick={()=>navigate('/seller/account')} >Account</a>
                       <a  className="navop" onClick={()=>{navigate('/seller/products')}}>My Products</a>
@@ -76,7 +88,8 @@ function Navbar() {
                
               <a href="" className="navop">Search</a>
             </div>
-            <div className="other w-1/3 grid grid-flow-col justify-items-end">
+            }
+            <div className="other md:relative fixed top-[-10%] w-1/3 grid grid-flow-col justify-items-end">
                   {
                     personState != '' &&
                     <>
