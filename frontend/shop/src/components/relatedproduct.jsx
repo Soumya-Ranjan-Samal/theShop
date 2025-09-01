@@ -10,7 +10,7 @@ function RelatedProduct(props){
 
     useEffect(()=>{
         let getRealatedPro = async ()=>{
-            await axios.get("http://localhost:3000/catagory/"+props.catagory).then((res)=>{
+            await axios.get("http://localhost:3000/products/catagory/"+props.catagory).then((res)=>{
                 setData(res.data);
             }).catch((error)=>{
                 console.log(error);
