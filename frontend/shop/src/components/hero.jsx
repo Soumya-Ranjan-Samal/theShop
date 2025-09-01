@@ -12,7 +12,7 @@ function Hero(){
 
     useEffect(()=>{
         let getData = async ()=>{
-            await axios.get("http://localhost:3000/products").then((res)=>{
+            await axios.get("http://localhost:3000/products/").then((res)=>{
                 setData(res.data);
             }).catch((error)=>{
                 console.log(error);

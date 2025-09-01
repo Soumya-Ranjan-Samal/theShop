@@ -1,7 +1,6 @@
 import  express from 'express';
 import Product from '../models/product.js';
 import User from "../models/user.js";
-import Seller from "../models/seller.js";
 import Review from "../models/review.js";
 import jwt from "jsonwebtoken";
 
