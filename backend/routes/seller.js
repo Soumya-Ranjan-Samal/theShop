@@ -1,8 +1,101 @@
 import express from 'express';
 import Seller from '../models/seller.js';
 import jwt from "jsonwebtoken";
+import { configDotenv } from 'dotenv';
+import bcrypt from 'bcrypt';
+
+configDotenv();
+
+const salt = process.env.SALT;
+const secret = process.env.SECRET;
 
 const sellerRoute = express.Router({mergeParams: true});
+
+sellerRoute.patch('/order/:id/update',async (req,res)=>{
+    let token = req.headers.authorization?.split(' ')[1];
+    if(!token){
+        res.send({message: 'You are not autherized to make changes', state: false});
+    }try{
+        let tokenData = jwt.verify(token, secret);
+        let {state, deliveryDate} = req.body;
+
+        let order = await Order.findOne({_id: req.body.id});
+        if(state == 'Delivered'){
+            opt = req.body.otp;
+            if(otp != order.Otp){
+                return res.status(400).send({
+                    message: "Invalid OTP",
+                    status: false
+                });
+            }
+        }
+        order.status = state;
+        order.deliveryDate = deliveryDate;
+        await order.save().then((result)=>{
+            res.status(200).send({
+                message: 'Updation successful',
+                state: true
+            });
+        }).catch(()=>{
+            res.status(500).send({
+                message: "Some error occured in updation",
+                state: false
+            });
+        });
+    }catch(error){
+        console.log(error);
+        res.send({message: 'You are not autherized to make changes', state: false});
+    }
+});
+
+sellerRoute.get('/account',async (req,res)=>{
+    let token = req.headers.authorization?.split(' ')[1];
+    if(!token){
+        res.send({message: 'Log in to visit account', state: false});
+    }try{
+        let tokenData = jwt.verify(token, secret);
+        await Seller.findOne({_id: tokenData._id}).then((data)=>{
+            res.send({data: data, state: true});
+        }).catch((error)=>{
+            console.log(error);
+            res.send({message: 'something went wrong please try later!', state: false})
+        });
+    }catch(error){
+        console.log(error);
+        res.send({message: 'Log in to visit account', state: false});
+    }
+});
+
+
+sellerRoute.get('/account/:rname',async (req,res)=>{
+    let token = req.headers.authorization?.split(' ')[1];
+    if(!token){
+        res.send({message: 'Log in to visit account', state: false});
+    }try{
+        let tokenData = jwt.verify(token, secret);
+        if(req.params.rname == 'orders'){
+            await Seller.findOne({_id: tokenData._id}).select('username companyName '+req.params.rname).populate({path: req.params.rname, populate: [{path: 'productId',select: '-review'},{path: 'buyerId',select: 'address email phone username'}], select: '-Otp'}).then((data)=>{
+            
+            res.send({data: data, state: true});
+        }).catch((error)=>{
+            console.log(error);
+            res.send({message: 'something went wrong please try later!', state: false})
+        });
+        }else if(req.params.rname == 'products'){
+            await Seller.findOne({_id: tokenData._id}).select('username companyName '+req.params.rname).populate(req.params.rname).then((data)=>{
+            
+            res.send({data: data, state: true});
+        }).catch((error)=>{
+            console.log(error);
+            res.send({message: 'something went wrong please try later!', state: false})
+        });
+        }
+        
+    }catch(error){
+        console.log(error);
+        res.send({message: 'Log in to visit account', state: false});
+    }
+});
 
 sellerRoute.post("/signup", async (req,res)=>{
     let data = req.body;

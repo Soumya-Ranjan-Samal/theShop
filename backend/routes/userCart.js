@@ -1,6 +1,12 @@
 import  express from 'express';
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
+import { configDotenv } from 'dotenv';
+import mongoose from 'mongoose';
+
+configDotenv();
+
+const secret = process.env.SECRET;
 
 const cartRoute = express.Router({mergeParams: true});
 
@@ -44,13 +50,21 @@ cartRoute.delete('/:id/remove',async (req,res)=>{
         });
     }
     try{
-        const tokenData = jwt.verify(token, secret)
-        await User.findOneAndUpdate({_id: tokenData._id},{$pull: {cart: req.params.id}}).then(()=>{
+        const tokenData = jwt.verify(token, secret);
+        let productId = new mongoose.Types.ObjectId(req.params.id);
+        await User.updateOne({_id: tokenData._id},{$pull: {cart: { $in : [productId]}}}).then((data)=>{
+            console.log('hello'+productId+'go');
             res.status(200).send({
                 message: "Item removed",
                 status: true
             });
-        })
+        }).catch((error)=>{
+            console.log(error);
+            res.status(500).send({
+                message: 'Something went wrong! please try later',
+                status: false
+            });
+        });
     }catch(error){
         console.log(error);
         res.status(400).send({

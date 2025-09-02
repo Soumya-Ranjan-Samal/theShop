@@ -1,8 +1,33 @@
 import  express from 'express';
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
+import { configDotenv } from 'dotenv';
+import bcrypt from 'bcrypt';
+
+configDotenv();
+
+const salt = process.env.SALT;
+const secret = process.env.SECRET;
 
 const userRoute = express.Router({mergeParams: true});
+
+userRoute.get('/account',async (req,res)=>{
+    let token = req.headers.authorization?.split(' ')[1];
+    if(!token){
+        res.send({message: 'Log in to visit account', state: false});
+    }try{
+        let tokenData = jwt.verify(token, secret);
+        await User.findOne({_id: tokenData._id}).then((data)=>{
+            res.send({data: data, state: true});
+        }).catch((error)=>{
+            console.log(error);
+            res.send({message: 'something went wrong please try later!', state: false})
+        })
+    }catch(error){
+        console.log(error);
+        res.send({message: 'Log in to visit account', state: false});
+    }
+});
 
 userRoute.post("/signup", async (req,res)=>{
     let data = req.body;

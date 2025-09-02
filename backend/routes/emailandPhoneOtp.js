@@ -1,5 +1,5 @@
 import  express from 'express';
-import { getOtp, emailOtps, phoneOtps } from '../utils/otpobject.js';
+import { phoneOtps, emailOtps, getOtp } from '../utils/otpobject.js';
 
 
 const otpRoute = express.Router({mergeParams: true});
