@@ -57,6 +57,7 @@ function SellerOrderCard({ order, setAllOrder }) {
         setOtpColor(false);
         return;
       }
+      console.log(localStorage.getItem('mytoken'));
       await axios.patch(`http://localhost:3000/seller/order/${order._id}/update`, {
         ...dataToUpdate,
       },{

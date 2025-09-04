@@ -93,9 +93,8 @@ function CartItemCard({ item, Data, setData }) {
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6  my-6 flex flex-col md:flex-row gap-6">
-      {/* Product Image */}
       
-      <div className="w-[250px] h-[250px] bg-gray-100 flex items-center justify-center">
+      <div className="w-[240px] h-[240px] bg-gray-100 rounded-xl hover:shadow-2xl flex items-center justify-center">
         <img
           src={item.pictures[0]}
           alt={item.name}
@@ -103,11 +102,9 @@ function CartItemCard({ item, Data, setData }) {
         />
       </div>
 
-
-      {/* Product Details */}
       <div className="flex-grow text-gray-800 flex flex-col justify-between">
         <div>
-          <h2 className="text-2xl font-bold mb-2">{item.name}</h2>
+          <h2 className="text-1xl font-bold mb-2">{item.name}</h2>
           <p className="text-sm text-gray-500 mb-1">Sold by: <span className="font-medium">{item.ProductSheller}</span></p>
           <p className="text-sm text-gray-500 mb-1">Available: <span className="font-medium">{item.Available}</span></p>
           <p className="text-sm text-gray-500 mb-1">Offer: <span className="font-medium">{item.Offer}% off</span></p>
@@ -115,7 +112,6 @@ function CartItemCard({ item, Data, setData }) {
           <p className="mt-4 text-sm text-gray-500">{item.review.length} reviews</p>
         </div>
 
-        {/* Quantity & Buy Button */}
         <div className="mt-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button

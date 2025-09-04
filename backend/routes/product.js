@@ -4,6 +4,12 @@ import User from "../models/user.js";
 import Seller from "../models/seller.js";
 import jwt from "jsonwebtoken";
 
+import { configDotenv } from 'dotenv';
+
+configDotenv();
+
+const secret = process.env.SECRET;
+
 const productRoute = express.Router({mergeParams: true});
 
 productRoute.get("/",async (req,res)=>{
@@ -173,7 +179,7 @@ productRoute.patch("/:id",async (req,res)=>{
         });
     }
     let data = req.body;
-    let product = await findOne({_id: data._id});
+    let product = await Product.findOne({_id: data._id});
     if(result._id == product.sellerId){
     await Product.findOneAndUpdate({_id: req.params.id},data,{ new: true } ).populate("review").then((result)=>{
         let avgrating = 0;

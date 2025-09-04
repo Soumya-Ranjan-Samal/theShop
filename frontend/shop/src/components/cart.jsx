@@ -45,7 +45,7 @@ function Cartbody() {
                 <span className="name2 font-bold w-1/3 text-2xl text-white ">Shopping Cart</span>
                 <div className="w-1/3" ></div>
             </div>
-            <div className="row2 md:flex-row flex flex-col  w-full justify-evenly">
+            <div className="row2 md:flex-row  flex flex-col  w-full justify-evenly">
                 <div className="col1 p-4">
                     {
                         Data.map((el)=>{
@@ -53,7 +53,7 @@ function Cartbody() {
                         })
                     }
                 </div>
-                <div className="col2 h-full md:w-1/3 w-[95%] m-4 rounded-lg  bg-white shadow-md p-4 sticky top-40">
+                <div className="col2 h-full md:w-1/3 w-[95%] m-4 rounded-lg text-sm bg-white shadow-md p-4 sticky top-40">
                     <CartTotalCard data = {Data}  setData={setData} />
                 </div>
             </div>

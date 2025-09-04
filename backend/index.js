@@ -20,8 +20,6 @@ configDotenv();
 
 const app = express();
 const port = process.env.PORT;
-const salt = process.env.SALT;
-const secret = process.env.SECRET;
 const mongodb_url = process.env.MONGODB_URL;
 
 app.use(express.urlencoded({extended: true}));

@@ -1,9 +1,10 @@
 .navop{
   text-decoration: none;
   position: relative;
-  color: black; /* Adjust as needed */
+  color: black; 
   padding: 0px 5px;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 
@@ -59,13 +60,21 @@ body{
   border-radius: 0.2rem;
 }
 
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
 .image{
   object-fit: cover;
 }
 
 .card,.image{
   transition: all 0.5s ease-in-out 0s;
-  background-color: rgb(245, 244, 244, 0.6);
+  background-color: rgba(245, 244, 244, 0.6);
 }
 .card:hover{
   border-radius: 0;
@@ -111,12 +120,11 @@ body{
   align-items: center;
 }
 .bigimage{
-  height: 32rem;
-  width: 80%;
+  height: 28rem;
   object-fit: contain;
   border: 1px solid white;
   border-radius: 2rem;
-  padding: 1rem;
+  padding: 0.5rem;
   margin: 1rem;
   background-color: rgba(1, 1, 1, 0.2);
   box-shadow: 1px 1px 4px black inset;
@@ -142,12 +150,12 @@ p{
 }
 
 .inputstyle{
-  border: 1px solid white;
-  border-radius: 5px;
-  padding: 0.4rem 1rem;
+  border: 2px solid white;
+  border-radius: 10px;
+  padding: 0.4rem;
   color: white;
-  font-size: medium;
-  background-color: rgba(11, 11, 11, 0.1);
+  text-align: center;
+  background-color: rgba(11, 11, 11, 0.5);
 }
 
 .wholeblack{

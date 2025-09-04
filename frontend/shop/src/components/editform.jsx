@@ -117,19 +117,19 @@ function Addform(){
             <div className="main min-h-[95dvh] text-white">
                 <div className="head flex">
                 <div><button className="back" onClick={()=>{navigate("/")}} ><ArrowBackIcon></ArrowBackIcon></button></div>
-                <h1 className="text-2xl font-bold p-4">EDIT PRODOCT DETAILS</h1>
+                <h1 className="text-xl font-bold p-4">EDIT PRODOCT DETAILS</h1>
                 </div>
-                <form action="" className="border m-4 text-lg font-semibold border-white rounded-lg p-6">
-                    <div className="row1 flex">
-                        <div className="col1  w-1/3 flex flex-col">
+                <form action="" className="border m-4 text-sm font-semibold border-white rounded-lg p-6">
+                    <div className="row1 flex md:flex-row flex-col">
+                        <div className="col1  md:w-1/3 flex flex-col">
                             <lable>Name of the product <span className="text-red-500">*</span></lable>
                             <input type="text" name="name" value={data.name} onChange={handelChange} className="inputstyle my-2 mr-2" />
                         </div>
-                        <div className="col2 w-1/3 flex flex-col">
+                        <div className="col2 md:w-1/3 flex flex-col">
                             <lable>Product price in rupees <span className="text-red-500">*</span></lable>
                             <input type="number" min={100} name="price" value={data.price} onChange={handelChange}  className="inputstyle my-2 mr-2" />
                         </div>
-                        <div className="col3 w-1/3 flex flex-col">
+                        <div className="col3 md:w-1/3 flex flex-col">
                             <lable>Available quantity <span className="text-red-500">*</span></lable>
                             <input type="number" name="Available" value={data.Available} onChange={handelChange}  className="inputstyle my-2" />
                         </div>
@@ -137,7 +137,7 @@ function Addform(){
 
                     <hr className="my-6 text-black" /> 
 
-                    <div className="row2 mt-2 flex justify-between">
+                    <div className="row2 mt-2 flex flex-row justify-between">
                         <div className="col1">
                             <label htmlFor="picq">Number of Pictures</label>
                             {
@@ -145,7 +145,7 @@ function Addform(){
                                 <input type="number" min={0} max={10} defaultValue={picarray.length} onChange={handelimagequantity} className="inputstyle mx-2"/>
                             }
                         </div>
-                        <div className="col2 flex flex-col w-1/3">
+                        <div className="col2 flex flex-col md:w-1/3">
                             <label htmlFor="picq">Any Offer / Discount</label>
                             <input type="number" min={0} max={80} name="Offer" value={data.Offer} onChange={handelChange}  className="inputstyle mx-2"/>
                         </div>
@@ -157,7 +157,7 @@ function Addform(){
                                 return (
                                     <>
                                         <div className="w-2/3 flex flex-col">
-                                                <span>image {index+1} : </span>
+                                                <span className="m-1">image {index+1} : </span>
                                                 <input type="text" name={""+index} value={el} onChange={handelimageChange} className="imagefield inputstyle" />
                                         </div>
                                     </>
@@ -168,22 +168,22 @@ function Addform(){
                     
                     <hr className="my-6 text-black" /> 
 
-                    <div className="row4 my-2 flex ">
-                        <div className="col1 w-1/3">
+                    <div className="row4 my-2 flex flex-col md:flex-row">
+                        <div className="col1 md:w-1/3">
                             <label htmlFor="">Number of Specificating </label>
                             {
                                 specsArr.length &&
                                 <input type="number" className="inputstyle" defaultValue={specsArr.length} onChange={handelSpecsQuantity}  />
                             }
                         </div>
-                        <div className="col2 w-2/3">
+                        <div className="col2 md:w-2/3">
                             {
                                 specsArr.map((el,index)=>{
                                     return (
                                         <>
                                             <div>
                                                 <span>specs {index+1} : </span>
-                                                <input type="text" value={el} name={index} onChange={handelSpecsChange}   className="specfield inputstyle m-2 w-[80%]" />
+                                                <input type="text" value={el} name={index} onChange={handelSpecsChange}   className="specfield inputstyle m-2 md:w-[80%]" />
                                             </div>
                                         </>
                                     )
@@ -195,8 +195,8 @@ function Addform(){
 
                         <hr className="my-6 text-black" /> 
 
-                    <div className="row5 flex">
-                        <div className="col1">
+                    <div className="row5 flex flex-col md:flex-row">
+                        <div className="col1 mb-2">
                             <label htmlFor="">Select Product catagory </label>
                                 <select name="catagory" className="inputstyle" onChange={handelCatChange} id="">
                                     <option value="">-select-</option>

@@ -27,20 +27,31 @@ function Hero(){
 
     return (
         <>
-        <div className="main">
+        <div className="main p-2">
             { catagory.map((el)=>{
                 return (
                     <>
-                        <h1 className="text-2xl font-bold text-white p-2 pl-6">{el}</h1>
-                        <div className="hero p-2">
+                        <h1 className="text-xl font-bold p-1 text-center text-white  rounded">{el}</h1>
+                        <div className="flex flex-wrap bg-[rgba(255,255,255,1)] rounded-3xl p-2">
                         {
                             Data.filter((e)=>{ return e.catagory.indexOf(el) != -1 }).map((one)=>{
                                 return (
                                     <>
-                                        <div onClick={()=>goto(one._id)} className="card text-white font-semibold m-2 w-86 rounded-4xl p-4">
-                                            <img className="h-68 m-1 rounded-2xl w-76 image"  src={one.pictures[0]} alt="/none" />
-                                            <p>{one.name}</p>
-                                            <p>Price: ₹{one.price}/-</p>
+                                        <div
+                                            onClick={() => goto(one._id)}
+                                            className="relative w-60 h-60 m-4 rounded-3xl overflow-hidden border border-gray-300 hover:border-white cursor-pointer group hover:shadow-lg"
+                                        >
+                                        <img
+                                            src={one.pictures[0]}
+                                            alt="Product"
+                                            className="w-full h-full object-cover rounded-3xl transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                        <div className="absolute inset-0 bg-white bg-opacity-80 text-gray-800 p-4 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-center">
+                                            <p className="font-semibold text-md">
+                                                {one.name}
+                                            </p>
+                                            <p className="text-sm mt-1">Price: ₹{one.price}/-</p>
+                                        </div>
                                         </div>
                                     </>
                                 )

@@ -191,7 +191,7 @@ function Detail(){
                                     <KeyboardArrowLeftRoundedIcon fontSize="large"  ></KeyboardArrowLeftRoundedIcon>
                                 </IconButton>
                             </div>
-                            <img className="bigimage" src={Data.pictures[curPic]} alt="not found" />
+                            <img className="bigimage w-3/4 md:w-2/3" src={Data.pictures[curPic]} alt="not found" />
                             <div>
                                 <IconButton sx={buttonstyle} onClick={()=>changepic(1)} >
                                     <ChevronRightRoundedIcon fontSize="large"  ></ChevronRightRoundedIcon>
@@ -212,33 +212,40 @@ function Detail(){
                         </div>
                     </div>
                 
-                    <div className="debts border border-white p-6 rounded-4xl  text-white md:w-[25%] text-xl m-4 ml-0">
-                        <p>{Data.name}</p>
-                        <p className="text-sm">Barnd {Data.ProductSheller}</p>
-                        <p> {Data.Available} Units Available </p>
-                        <p><b><span className="text-yellow-400 text-2xl" >{Data.Offer}% Off</span> on this product</b></p>
-                        <p className="text-sm"> After all Discount</p>
-                        <p>Price:&nbsp;<span className="linethrough opacity-70" >${Data.price}.00/-</span>&nbsp; <b className="text-2xl text-black font-bold">${Data.price * ((100-Data.Offer)/100)}/-</b></p>
-                        <div className="h-[2px] m-4 bg-white">
 
-                        </div>
-                        <span>
-                            <span className="text-2xl">Specificatioins</span>
-                            <ol className="specs text-[15px] border border-white rounded-xl my-4 bg-black opacity-40 p-4  ">
-                                {
-                                    Data.specifications.map((el)=>{
-                                        return (
-                                            <li>* {el}</li>
-                                        )
-                                    })
-                                }
-                            </ol>
+                    <div className="border border-white h-full p-6 rounded-2xl text-black w-full md:w-1/4 text-base md:m-4 shadow-lg" style={{ backgroundColor: "rgba(245, 244, 244, 0.6)" }}>
+                        
+                            
+                            <h2 className="text-xl font-semibold mb-2">{Data.name} <span className="text-yellow-500 px-2 rounded-full bg-yellow-100 hover:shadow-xl text-xl font-bold">{Data.Offer}% Off</span></h2>
+                        
+
+                        <p className="text-sm mb-1">Brand: <span className="font-medium">{Data.ProductSheller}</span></p>
+                        <p className="mb-1">{Data.Available} units available</p>
+                        <p className="text-sm mb-2">After all discounts</p>
+                        <p className="mb-4">
+                            Price:&nbsp;
+                        <span className="line-through text-gray-500">₹{Data.price}.00/-</span>&nbsp;
+                        <span className="text-2xl text-gray-600 bg-gray-100 rounded-full px-2 py-1 hover:shadow-lg font-bold">
+                            ₹{Math.floor(Data.price * ((100 - Data.Offer) / 100))}/-
                         </span>
+                    </p>
+
+                    <div className="h-[1px] bg-gray-400 my-4" />
+
+                    <div>
+                        <h3 className="text-xl font-semibold mb-2">Specifications</h3>
+                        <ol className="list-disc list-inside bg-white bg-opacity-30 rounded-xl p-4 text-sm space-y-1">
+                        {Data.specifications.map((el, index) => (
+                            <li key={index}>{el}</li>
+                        ))}
+                        </ol>
                     </div>
+                    </div>
+
                 </div>
                 {
                     localStorage.getItem('person') != 'Seller' && 
-                    <div className="row3 m-4 border border-white rounded-xl p-2">
+                    <div className="row3 m-4 border border-white rounded-xl p-4">
                         <ButtonGroup  variant="contained" className="w-[100%]" aria-label="Basic button group">
                             <Button sx={{backgroundColor: "white", color: "black", width: "40%"}} onClick={()=>handelAddToCart(true)}  endIcon={<ShoppingBagIcon/>} >Buy</Button>
                             <Button sx={{backgroundColor: "white", color: "black", width: "60%"}} onClick={()=>handelAddToCart(false)} endIcon={<ShoppingCartIcon/>}>Add to cart</Button>
@@ -262,8 +269,8 @@ function Detail(){
                 )
                 }
                 <div className="row4 flex md:flex-row flex-col  m-4 border border-white justify-between align-center p-4 rounded-xl">
-                    <div className=" border border-white rounded-lg md:w-1/3 p-8">
-                        <span className="text-xl text-white">Ratings by buyers: </span>
+                    <div className=" border border-white rounded-lg md:w-1/3 p-4">
+                        <span className="text-lg text-white">Ratings by buyers: </span>
                         <div>
                             <Stack>
                                 {
@@ -291,11 +298,11 @@ function Detail(){
                             {
                                 Data.review.map((rev)=>{
                                     return (
-                                        <div className="revcard border border-gray-100 p-4 m-2 rounded-md text-gray-200 w-full md:w-[30%]">
-                                            <div className="line1">
+                                        <div className="revcard text-sm border border-gray-100 p-4 m-2 rounded-md bg-gray-100 text-gray-500 w-full md:w-[32%]">
+                                            <div className="line1 flex justify-between">
                                                 <Rating  name="size-medium" defaultValue={rev.rating}  readOnly />
-                                                <span className="relative top-[-5px]">
-                                                    - By {rev.userId?.username}
+                                                <span className="relative text-black top-[-5px]">
+                                                    - By {rev.userId ? rev.userId.username : 'Unknown'}
                                                 </span>
                                             </div>
                                            <div className="line2">

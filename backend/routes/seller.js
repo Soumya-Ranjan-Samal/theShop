@@ -1,6 +1,8 @@
 import express from 'express';
 import Seller from '../models/seller.js';
+import Order from '../models/order.js';
 import jwt from "jsonwebtoken";
+import mongoose from 'mongoose';
 import { configDotenv } from 'dotenv';
 import bcrypt from 'bcrypt';
 
@@ -12,14 +14,14 @@ const secret = process.env.SECRET;
 const sellerRoute = express.Router({mergeParams: true});
 
 sellerRoute.patch('/order/:id/update',async (req,res)=>{
-    let token = req.headers.authorization?.split(' ')[1];
+    let token = req.headers?.authorization?.split(' ')[1];
+    console.log(token);
     if(!token){
-        res.send({message: 'You are not autherized to make changes', state: false});
+        res.status(400).send({message: 'You are not autherized to make changes', state: false});
     }try{
         let tokenData = jwt.verify(token, secret);
         let {state, deliveryDate} = req.body;
-
-        let order = await Order.findOne({_id: req.body.id});
+        let order = await Order.findOne({_id: req.params.id});
         if(state == 'Delivered'){
             opt = req.body.otp;
             if(otp != order.Otp){
@@ -44,7 +46,7 @@ sellerRoute.patch('/order/:id/update',async (req,res)=>{
         });
     }catch(error){
         console.log(error);
-        res.send({message: 'You are not autherized to make changes', state: false});
+        res.status(400).send({message: 'You are not autherized to make changes', state: false});
     }
 });
 

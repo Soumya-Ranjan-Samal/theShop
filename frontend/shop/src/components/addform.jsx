@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import Confirm from "./confirm";
 import axios from "axios";
 import "../App.css";
@@ -11,6 +12,7 @@ function Addform(){
     const navigate = useNavigate();
 
     let [picarray, setPicarray] = useState([]);
+    let [picCount, setPicCount] = useState(0);
     let [specsArr, setspecsArr] = useState([]);
     let [cat,setCat] = useState([]);
     let [data,setData] = useState({
@@ -58,10 +60,22 @@ function Addform(){
         setData({...data,[name]: value});
     }
 
+    function handelImageNumber(el){
+        el.preventDefault();
+        setPicCount(el => el+1);
+        console.log(picCount);
+    }
+
+    function handelImageDelete(el){
+        el.preventDefault();
+        console.log()
+    }
+
     function handelimageChange(el){
-        let arr = [...picarray]
-        arr[parseInt(el.target.name)] = el.target.value;
-        setPicarray(arr);
+        // let arr = [...picarray]
+        // arr[parseInt(el.target.name)] = el.target.value;
+        // setPicarray(arr);
+        console.log(el.target.files);
     }
 
     function handelSpecsChange(el){
@@ -94,55 +108,77 @@ function Addform(){
         });
     }
 
+
     return (
         <>
-            <div className="main min-h-[95dvh] text-white">
+            <div className="main min-h-[95dvh]  text-white">
                 <div className="head flex">
                 <div><button className="back" onClick={()=>{navigate("/")}} ><ArrowBackIcon></ArrowBackIcon></button></div>
-                <h1 className="text-2xl font-bold p-4">ADD NEW PRODUCT TO SELL</h1>
+                <h1 className="text-xl font-bold p-4">ADD NEW PRODUCT TO SELL</h1>
                 </div>
-                <form action="" className="border m-4 text-lg font-semibold border-white rounded-lg p-6">
-                    <div className="row1 flex">
-                        <div className="col1  w-1/3 flex flex-col">
+                <form action="" className="border m-4 text-sm font-semibold border-white rounded-lg p-6">
+                    <div className="row1 flex md:flex-row flex-col">
+                        <div className="col1  md:w-1/4 flex flex-col">
                             <lable>Name of the product <span className="text-red-500">*</span></lable>
                             <input type="text" name="name" value={data.name} onChange={handelChange} className="inputstyle my-2 mr-2" />
                         </div>
-                        <div className="col2 w-1/3 flex flex-col">
+                        <div className="col2 md:w-1/4 flex flex-col">
                             <lable>Product price in rupees <span className="text-red-500">*</span></lable>
                             <input type="number" min={100} name="price" value={data.price} onChange={handelChange}  className="inputstyle my-2 mr-2" />
                         </div>
-                        <div className="col3 w-1/3 flex flex-col">
+                        <div className="col3 md:w-1/4 flex flex-col">
                             <lable>Available quantity <span className="text-red-500">*</span></lable>
                             <input type="number" name="Available" value={data.Available} onChange={handelChange}  className="inputstyle my-2" />
+                        </div>
+                        <div className="col4 flex flex-col md:w-1/4">
+                            <label htmlFor="picq">Any Offer / Discount</label>
+                            <input type="number" min={0} max={80} name="Offer" value={data.Offer} onChange={handelChange}  className="inputstyle ml-2 my-2"/>
                         </div>
                     </div>
 
                     <hr className="my-6 text-black" /> 
 
-                    <div className="row2 mt-2 flex justify-between">
+                    {/* <div className="row2 mt-2 flex justify-between">
                         <div className="col1">
                             <label htmlFor="picq">Number of Pictures</label>
                             <input type="number" min={0} max={10} onChange={handelimagequantity} className="inputstyle mx-2"/>
                         </div>
-                        <div className="col2 flex flex-col w-1/3">
-                            <label htmlFor="picq">Any Offer / Discount</label>
-                            <input type="number" min={0} max={80} name="Offer" value={data.Offer} onChange={handelChange}  className="inputstyle mx-2"/>
-                        </div>
-                    </div>
+                        
+                    </div> */}
 
-                    <div className="row3 flex flex-col">
+                    <label htmlFor="image">Add Images of Prodduct</label>
+
+                    {/* <div className="row3 flex flex-col">
                         {
                             picarray.map((el,index)=>{
                                 return (
                                     <>
                                         <div className="w-2/3 flex flex-col">
                                                 <span>image {index+1} : </span>
-                                                <input type="text" name={""+index} value={el} onChange={handelimageChange} className="imagefield inputstyle" />
+                                                <input type="file" multiple name={"" + index}  onChange={handelimageChange} className="imagefield inputstyle" />
+                                                <div className="preview">
+                                                    <img src={''} alt="" />
+                                                </div>
                                         </div>
                                     </>
                                 )
                             })
                         }
+                    </div> */}
+
+
+                    <div className="row3 flex flex-col">
+                        {
+                            Array.from({length: picCount}).map((_, index)=>{
+                                return (
+                                    <div className="m-2 flex">
+                                        <input type="file" name={'image'+index} className="border w-1/2 border-white rounded-xl p-2 inputstyle" />
+                                        <button className="border-2 mx-1 border-white rounded-lg p-1" onClick={(el)=>{el.preventDefault();handelImageDelete(index)}} ><DeleteRoundedIcon/></button>
+                                    </div>
+                                )
+                            })
+                        }
+                        <button onClick={handelImageNumber} className="bg-blue-100 text-blue-600 rounded-lg px-3 py-2 transition-all duration-300 cursor-pointer hover:border-blue-600 border-2 active:bg-blue-600 active:border-white active:text-blue-100 border-blue-100 text-sm hover:text-base m-2" >{ picCount == 0 ? 'Add a Image' : 'Add another image' }</button>
                     </div>
                     
                     <hr className="my-6 text-black" /> 

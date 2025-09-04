@@ -1,9 +1,19 @@
 import express from 'express';
 import jwt from "jsonwebtoken";
+import Order from '../models/order.js';
+import Seller from '../models/seller.js';
+import User from '../models/user.js';
+import Product from '../models/product.js';
+import { getOtp } from '../utils/otpobject.js';
+import { configDotenv } from 'dotenv';
+
+configDotenv();
+
+const secret = process.env.SECRET;
 
 const orderRoute = express.Router({mergeParams: true});
 
-orderRoute.get('/order',async (req,res)=>{
+orderRoute.get('/',async (req,res)=>{
  const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(400).send({
@@ -21,7 +31,7 @@ orderRoute.get('/order',async (req,res)=>{
   }
 });
 
-orderRoute.post('/order', async (req, res) => {
+orderRoute.post('/', async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(400).send({
@@ -77,7 +87,7 @@ orderRoute.post('/order', async (req, res) => {
   }
 });
 
-orderRoute.post('/order/:id/:quantity', async (req, res) => {
+orderRoute.post('/:id/:quantity', async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(400).send({
@@ -130,7 +140,7 @@ orderRoute.post('/order/:id/:quantity', async (req, res) => {
   }
 });
 
-orderRoute.patch('/order/cancel/:orderId',async (req,res)=>{
+orderRoute.patch('/cancel/:orderId',async (req,res)=>{
     const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(400).send({

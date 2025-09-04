@@ -147,9 +147,9 @@ let verifyPhone = ()=>{
                     sign &&
                     <>
                     <div className="row1 w-full flex flex-col m-2">
-                        <TextField id="standard-basic" name='username' value={form.username} onChange={updatefun} label="Your Full Name" variant="standard" />
+                        <TextField  id="standard-basic" name='username' value={form.username} onChange={updatefun} label="Your Full Name" variant="standard" />
                     </div>
-                <div className="row2 w-full flex flex-row items-center justify-center  m-2">
+                <div className="row2 text-sm w-full flex flex-row items-center justify-center  m-2">
                     <TextField
                         id="standard-select-currency"
                         select

@@ -64,13 +64,13 @@ const cardVariants = {
         <div className="main min-h-dvh">
             <div className="row1 flex justify-evenly">
                 <div className="w-1/3"><button className="back" onClick={()=>{navigate("/")}} ><ArrowBackIcon></ArrowBackIcon></button></div>
-                <span className="name2 font-bold w-1/3 md:text-3xl text-xl text-white mt-2">{greetings()} {Data?.username?.split(' ')[0]}</span>
+                <span className="name2 font-bold w-1/3 md:text-2xl text-xl text-white mt-2">{greetings()} {Data?.username?.split(' ')[0]}</span>
                 <div className="w-1/3" ></div>
             </div>
-            <div id="scrollBox" className="row2 justify-items-center items-center flex flex-wrap flex-col gap-4 p-4 w-full justify-evenly">
+            <div id="scrollBox" className="row2 text-sm justify-items-center items-center flex flex-wrap flex-col gap-4 p-4 w-full justify-evenly">
                 <div className="b flex flex-col justify-evenly w-full md:flex-row ">
                     <Showdata data={Data?.companyName} name={'Company Name'}></Showdata>
-                    <label className="selector flex md:w-1/3 mt-2 md:mt-0 border text-white border-white rounded-4xl p-2">
+                    <label className="shadow-lg selector flex md:w-1/3 mt-2 md:mt-0 border text-white  rounded-4xl p-2">
                         <input type="text" value={search} onChange={(el)=>setSearch(el.target.value)} className=' w-full m-1' placeholder="Search your product by name" />
                         <div className="log w-28 bg-white text-gray-500 rounded-full p-1">
                             <SearchRoundedIcon sx={{backgroundColor: "white", color:"gray", borderRadius: "50%"}}></SearchRoundedIcon>
