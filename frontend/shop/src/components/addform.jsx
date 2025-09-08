@@ -4,6 +4,7 @@ import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import { formControlClasses, Tooltip } from "@mui/material";
 import Confirm from "./confirm";
 import axios from "axios";
 import "../App.css";
@@ -63,19 +64,41 @@ function Addform(){
     function handelImageNumber(el){
         el.preventDefault();
         setPicCount(el => el+1);
-        console.log(picCount);
     }
 
-    function handelImageDelete(el){
-        el.preventDefault();
-        console.log()
+   function handelimageChange(element, index) {
+    const localUrl = URL.createObjectURL(element.target.files[0]);
+
+    setPicarray(prev => {
+        const updated = prev.map(item =>
+        item.id === index
+            ? { ...item, url: localUrl, data: element.target.files[0] }
+            : item
+        );
+
+        const exists = updated.some(item => item.id === index);
+
+        return exists
+        ? updated
+        : [...prev, { id: index, url: localUrl, data: element.target.files[0] }];
+
+    });
     }
 
-    function handelimageChange(el){
-        // let arr = [...picarray]
-        // arr[parseInt(el.target.name)] = el.target.value;
-        // setPicarray(arr);
-        console.log(el.target.files);
+    useEffect(()=>{
+        console.log(picarray);
+    },[picarray]);
+
+    function handelImageDiscard(index){
+        console.log(index);
+        let field = document.querySelector('#imageFieldCollector');
+        Array.from(field.children).forEach(element => {
+            if(element.id == index){
+                // setPicCount(el => el-1);
+                field.removeChild(element);
+                setPicarray(el=> el.filter((e)=> e.id != index));
+            }
+        });
     }
 
     function handelSpecsChange(el){
@@ -85,8 +108,8 @@ function Addform(){
     }
 
     function handelSubmit(){
+        
         let send = async ()=>{
-            console.log(localStorage.getItem("mytoken"));
             await axios.post("http://localhost:3000/products",{
                 ...data,
                 pictures: picarray,
@@ -119,15 +142,15 @@ function Addform(){
                 <form action="" className="border m-4 text-sm font-semibold border-white rounded-lg p-6">
                     <div className="row1 flex md:flex-row flex-col">
                         <div className="col1  md:w-1/4 flex flex-col">
-                            <lable>Name of the product <span className="text-red-500">*</span></lable>
-                            <input type="text" name="name" value={data.name} onChange={handelChange} className="inputstyle my-2 mr-2" />
+                            <label >Name of the product <span className="text-red-500">*</span></label>
+                            <input type="text" id="name" name="name" value={data.name} onChange={handelChange} className="inputstyle my-2 mr-2" />
                         </div>
                         <div className="col2 md:w-1/4 flex flex-col">
-                            <lable>Product price in rupees <span className="text-red-500">*</span></lable>
+                            <label>Product price in rupees <span className="text-red-500">*</span></label>
                             <input type="number" min={100} name="price" value={data.price} onChange={handelChange}  className="inputstyle my-2 mr-2" />
                         </div>
                         <div className="col3 md:w-1/4 flex flex-col">
-                            <lable>Available quantity <span className="text-red-500">*</span></lable>
+                            <label>Available quantity <span className="text-red-500">*</span></label>
                             <input type="number" name="Available" value={data.Available} onChange={handelChange}  className="inputstyle my-2" />
                         </div>
                         <div className="col4 flex flex-col md:w-1/4">
@@ -167,18 +190,24 @@ function Addform(){
                     </div> */}
 
 
-                    <div className="row3 flex flex-col">
+                    <div id="imageFieldCollector" className="row3 flex flex-col">
                         {
                             Array.from({length: picCount}).map((_, index)=>{
                                 return (
-                                    <div className="m-2 flex">
-                                        <input type="file" name={'image'+index} className="border w-1/2 border-white rounded-xl p-2 inputstyle" />
-                                        <button className="border-2 mx-1 border-white rounded-lg p-1" onClick={(el)=>{el.preventDefault();handelImageDelete(index)}} ><DeleteRoundedIcon/></button>
+                                    <div id={index} className="m-2 flex flex-row items-center justify-between md:w-1/3" key={index}>
+                                        <input type="file" onChange={(el)=>handelimageChange(el, index)} className="border w-3/4 border-white rounded-xl p-2 inputstyle" />
+                                        <img src={picarray[index]?.url} alt="" className="h-10 w-12 rounded-lg border-2 border-white cover" />
+                                        <Tooltip placement="right" title='Discard this field'>
+                                            <button className="border-2 mx-1 hover:bg-[rgba(0,0,0,0.4)] border-white rounded-lg p-1" onClick={(el)=>{el.preventDefault();handelImageDiscard(index)}} ><DeleteRoundedIcon/></button>
+                                        </Tooltip>
                                     </div>
                                 )
                             })
                         }
-                        <button onClick={handelImageNumber} className="bg-blue-100 text-blue-600 rounded-lg px-3 py-2 transition-all duration-300 cursor-pointer hover:border-blue-600 border-2 active:bg-blue-600 active:border-white active:text-blue-100 border-blue-100 text-sm hover:text-base m-2" >{ picCount == 0 ? 'Add a Image' : 'Add another image' }</button>
+                        <Tooltip title='Add another field for an image' >
+
+                        <button id="none" onClick={handelImageNumber} className="bg-blue-100 text-blue-600 rounded-lg px-3 py-2 transition-all duration-300 cursor-pointer hover:border-blue-600 border-2 active:bg-blue-600 active:border-white active:text-blue-100 border-blue-100 text-sm hover:text-base m-2" >{ picCount == 0 ? 'Add a Image' : 'Add another image' }</button>
+                        </Tooltip>
                     </div>
                     
                     <hr className="my-6 text-black" /> 
@@ -213,11 +242,9 @@ function Addform(){
                                 <select name="catagory" className="inputstyle" onChange={handelCatChange} id="">
                                     <option value="">-select-</option>
                                     {
-                                        catagory.map((el)=>{
+                                        catagory.map((el, index)=>{
                                             return (
-                                                <>
-                                                    <option value={el} className="bg-black text-white">{el}</option>
-                                                </>
+                                                    <option value={el} key={index} className="bg-black text-white">{el}</option>
                                             )
                                         })
                                     }

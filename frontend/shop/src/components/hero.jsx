@@ -39,7 +39,7 @@ function Hero(){
                                     <>
                                         <div
                                             onClick={() => goto(one._id)}
-                                            className="relative w-60 h-60 m-4 rounded-3xl overflow-hidden border border-gray-300 hover:border-white cursor-pointer group hover:shadow-lg"
+                                            className="relative w-60 h-60 m-4 hover:scale-110 transition-transform duration-300 rounded-3xl overflow-hidden border border-gray-300 hover:border-white cursor-pointer group hover:shadow-lg"
                                         >
                                         <img
                                             src={one.pictures[0]}

@@ -54,10 +54,10 @@ function SellerOrderDash(){
                 <div className="w-1/3" ></div>
             </div>
 
-            <div className="text-sm md:w-1/2  w-full m-4 flex justify-around  rounded-full">
-                <button value={"Pendings"} onClick={handelChange} className={ "p-1 cursor-pointer border border-white w-1/3 rounded-l-full hover:text-yellow-500 hover:shadow-xl shadow-yellow-500" + (filter == 'Pendings' ? ' bg-white text-black' : ' bg-black text-white' )} >Pendings</button>
-                <button value={"Delivered"} onClick={handelChange} className={ "p-1 cursor-pointer border border-white w-1/3 hover:text-blue-500 hover:shadow-xl shadow-blue-500" + (filter == 'Delivered' ? ' bg-white text-black' : ' bg-black text-white' )}>Delivered</button>
-                <button value={"Canceled"} onClick={handelChange} className={ "p-1 cursor-pointer border border-white w-1/3 hover:text-red-500 rounded-r-full hover:shadow-xl shadow-red-500" + (filter == 'Canceled' ? ' bg-white text-black' : ' bg-black text-white' )}>Canceled</button>
+            <div className="text-sm md:w-1/3  w-full m-4 flex justify-around  rounded-full">
+                <button value={"Pendings"} onClick={handelChange} className={ " transition-all duration-300 p-1 cursor-pointer border border-white w-1/3 rounded-l-full hover:text-yellow-500 hover:shadow-xl shadow-yellow-500" + (filter == 'Pendings' ? ' bg-white text-black' : ' bg-black text-white' )} >Pendings</button>
+                <button value={"Delivered"} onClick={handelChange} className={ "transition-all duration-300 p-1 cursor-pointer border border-white w-1/3 hover:text-blue-500 hover:shadow-xl shadow-blue-500" + (filter == 'Delivered' ? ' bg-white text-black' : ' bg-black text-white' )}>Delivered</button>
+                <button value={"Canceled"} onClick={handelChange} className={ "transition-all duration-300 p-1 cursor-pointer border border-white w-1/3 hover:text-red-500 rounded-r-full hover:shadow-xl shadow-red-500" + (filter == 'Canceled' ? ' bg-white text-black' : ' bg-black text-white' )}>Canceled</button>
             </div>
             
             <div className="data mt-20 flex flex-col md:flex-row flex-wrap justify-evenly w-full">

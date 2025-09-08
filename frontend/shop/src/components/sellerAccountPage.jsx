@@ -58,7 +58,7 @@ function SellerAccountPage(){
                 <ModifiableData data={Data?.address} name={'Address'}></ModifiableData>
                 <div className="flex w-full md:w-1/2 md:flex-row flex-col  justify-between">
                     <Showdata data={Data?.products.length} name={'Product Selleing'}></Showdata>
-                    <Button onClick={()=>{navigate('/add')}} class="md:mt-0 mt-5 hover:bg-blue-600 hover:text-blue-100 hover:text-4xl hover:shadow-lg transition-all border-2 hover:border-white duration-400 px-1 py-2 rounded-lg md:w-1/3 bg-blue-100 text-blue-600" >Add new Product</Button>
+                    <Button onClick={()=>{navigate('/add')}} class="md:mt-0 mt-5 hover:bg-blue-600 hover:text-blue-100 hover:scale-110 hover:shadow-lg transition-all border-2 hover:border-white duration-400 px-1 py-2 rounded-lg md:w-1/3 bg-blue-100 text-blue-600" >Add new Product</Button>
                 </div>
                 <Showdata data={Data?.orders.length} name={'Total Order Available'}></Showdata>
                 <Button onClick={()=>{localStorage.removeItem('mytoken');navigate('/sign')}} class=" transition-all delay-200 duration-700 bg-white hover:text-white hover:bg-red-500 hover:border-white rounded-xl border border-red-500 p-2 text-red-500 md:w-1/6" >Sign Out</Button>
