@@ -94,7 +94,6 @@ function Addform(){
         let field = document.querySelector('#imageFieldCollector');
         Array.from(field.children).forEach(element => {
             if(element.id == index){
-                // setPicCount(el => el-1);
                 field.removeChild(element);
                 setPicarray(el=> el.filter((e)=> e.id != index));
             }
@@ -107,9 +106,37 @@ function Addform(){
         setspecsArr(arr);
     }
 
+
+    async function handelImageUpload(file){
+        let formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', "theShopFrontendUpload");
+        try{
+            let res = await axios.post("https://api.cloudinary.com/v1_1/duwup3a7i/image/upload", formData);
+            return res.data.secure_url;
+        }catch(error){
+            console.error("Upload failed:", err);
+            return null;
+        }
+    }
+
     function handelSubmit(){
         
         let send = async ()=>{
+
+            const uploadImage = async ()=>{
+                    let uploadedImage = []
+                    for(let i of picarray){
+                        let url = await handelImageUpload(i.data);
+                        if(url){
+                            uploadedImage.push(url)
+                        }
+                    }
+                    setPicarray(uploadedImage);
+                }
+
+            uploadImage();
+
             await axios.post("http://localhost:3000/products",{
                 ...data,
                 pictures: picarray,
@@ -160,35 +187,7 @@ function Addform(){
                     </div>
 
                     <hr className="my-6 text-black" /> 
-
-                    {/* <div className="row2 mt-2 flex justify-between">
-                        <div className="col1">
-                            <label htmlFor="picq">Number of Pictures</label>
-                            <input type="number" min={0} max={10} onChange={handelimagequantity} className="inputstyle mx-2"/>
-                        </div>
-                        
-                    </div> */}
-
                     <label htmlFor="image">Add Images of Prodduct</label>
-
-                    {/* <div className="row3 flex flex-col">
-                        {
-                            picarray.map((el,index)=>{
-                                return (
-                                    <>
-                                        <div className="w-2/3 flex flex-col">
-                                                <span>image {index+1} : </span>
-                                                <input type="file" multiple name={"" + index}  onChange={handelimageChange} className="imagefield inputstyle" />
-                                                <div className="preview">
-                                                    <img src={''} alt="" />
-                                                </div>
-                                        </div>
-                                    </>
-                                )
-                            })
-                        }
-                    </div> */}
-
 
                     <div id="imageFieldCollector" className="row3 flex flex-col">
                         {
