@@ -36,7 +36,7 @@ function OrderCard({ order, refreshOrders }) {
       
       <div className="w-full md:w-40 h-40 flex-shrink-0 overflow-hidden rounded-lg border">
         <img
-          src={order.productId.pictures[0]}
+          src={order.productId.pictures[0].url}
           alt={order.productId.name}
           className="w-full h-full object-cover"
         />

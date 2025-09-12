@@ -15,6 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
 import RelatedProduct from "./relatedproduct";
 import Confirm from "./confirm";
+import Rendering from "./rendering";
 import  axios  from "axios";
 import "../App.css";
 
@@ -28,6 +29,7 @@ function Detail(){
         specifications: [],
         review: [],
     });
+    let [render, setRender] = useState(false);
     let [curPic,setCurPic] = useState(0);
     let [reviewData,setReviewData] = useState({
         rating: 0,
@@ -42,12 +44,15 @@ function Detail(){
                 }
             }).then((res)=>{
                 setData({...res.data});
+                setRender(false);
             }).catch((error)=>{
+                setRender(false);
                 console.log(error);
             });
         }
 
     useEffect(()=>{
+        setRender(true)
         getData();
     },[]);
 
@@ -75,6 +80,7 @@ function Detail(){
 
     function submitreview(){
         let send = async ()=>{
+            setRender(true);
             await axios.post(`http://localhost:3000/products/${params.id}/review`,{
                 ...reviewData
             },{
@@ -83,8 +89,10 @@ function Detail(){
                 }
             }).then((res)=>{
                 getData();
+                setRender(false);
             }).catch((error)=>{
                 console.log(error);
+                setRender(false);
                 alert(error.response.data.details._message);
             });
         }
@@ -96,34 +104,38 @@ function Detail(){
 
     let handelDeleteProduct = ()=>{
         let deleteProduct = async ()=>{
+            setRender(true);
             await axios.delete(`http://localhost:3000/products/${params.id}/delete`,{
                 headers: {
                     Authorization: `Barear ${localStorage.getItem("mytoken")}`
                 }
             }).then((res)=>{
-                if(res.data.status == false){
-                    alert(res.data.message);
-                }else{
-                    navigate("/");                  
-                }
-            })
+                navigate('/');
+
+            }).catch((error)=>{
+                setRender(false);
+                console.log(error);
+            });
         }
         setAsk({
-            text: "Are you want to submit this comment",
+            text: "Are sure to delete this product from you inventory?",
             fun: deleteProduct,
         });
     }
 
     function handelDeleteReview(id){
         let del = async ()=>{
+            setRender(true);
             await axios.delete(`http://localhost:3000/products/${Data._id}/review/${id}`,{
                 headers: {
                     Authorization: `bearer ${localStorage.getItem('mytoken')}`
                 }
             }).then((res)=>{
                 getData();
+                setRender(false);
             }).catch((error)=>{
                 console.log(error);
+                setRender(false);
             });
         }
         setAsk({
@@ -134,6 +146,7 @@ function Detail(){
 
     function handelAddToCart(go){
         let add = async ()=>{
+            setRender(true);
             await axios.post(`http://localhost:3000/user/cart/${Data._id}/add`,{},{
                 headers: {
                     Authorization: `Barear ${localStorage.getItem("mytoken")}`
@@ -150,13 +163,15 @@ function Detail(){
                     }
                     alert('something went wrong! please try later.');
                 }
+                setRender(false);
             }).catch((error)=>{
                 if(error.status == 400){
                     alert('Do login first')
                     return navigate('/sign',{state: {from: "/detail/"+Data._id}});
                 }
+                setRender(false);
                 alert('something went wrong! please try later.');
-            })
+            });
         }
         if( Data.Available > 0 ){
             setAsk({
@@ -180,7 +195,7 @@ function Detail(){
             <div className="main md:w-full md:p-0 p-2 w-[99%]">
                 <div className="row1 flex justify-evenly">
                     <div className="md:w-1/3"><button className="back" onClick={()=>{navigate("/")}} ><ArrowBackIcon></ArrowBackIcon></button></div>
-                    <span className="name2 font-bold md:w-1/3 md:text-2xl text-white ">{Data.name}</span>
+                    <span className="name2 font-bold md:w-1/3 md:text-lg text-white ">{Data.name}</span>
                     <div className="md:w-1/3" ></div>
                 </div>
                 <div className="row2 w-full flex flex-col md:flex-row">
@@ -191,7 +206,7 @@ function Detail(){
                                     <KeyboardArrowLeftRoundedIcon fontSize="large"  ></KeyboardArrowLeftRoundedIcon>
                                 </IconButton>
                             </div>
-                            <img className="bigimage w-3/4 md:w-2/3" src={Data.pictures[curPic]} alt="not found" />
+                            <img className="bigimage w-3/4 md:w-2/3" src={Data.pictures[curPic]?.url} alt="not found" />
                             <div>
                                 <IconButton sx={buttonstyle} onClick={()=>changepic(1)} >
                                     <ChevronRightRoundedIcon fontSize="large"  ></ChevronRightRoundedIcon>
@@ -213,10 +228,10 @@ function Detail(){
                     </div>
                 
 
-                    <div className="border border-white h-full p-6 rounded-2xl text-black w-full md:w-1/4 text-base md:m-4 shadow-lg" style={{ backgroundColor: "rgba(245, 244, 244, 0.6)" }}>
+                    <div className="border text-sm border-white h-full p-6 rounded-2xl text-black w-full md:w-1/4 text-base md:m-4 shadow-lg" style={{ backgroundColor: "rgba(245, 244, 244, 0.6)" }}>
                         
                             
-                            <h2 className="text-xl font-semibold mb-2">{Data.name} <span className="text-yellow-500 px-2 rounded-full bg-yellow-100 hover:shadow-xl text-xl font-bold">{Data.Offer}% Off</span></h2>
+                            <h2 className="text-xl font-semibold mb-2"><p>{Data.name}</p> <span className="text-yellow-500 px-2 rounded-full bg-yellow-100 hover:shadow-xl font-bold">{Data.Offer}% Off</span></h2>
                         
 
                         <p className="text-sm mb-1">Brand: <span className="font-medium">{Data.ProductSheller}</span></p>
@@ -225,7 +240,7 @@ function Detail(){
                         <p className="mb-4">
                             Price:&nbsp;
                         <span className="line-through text-gray-500">₹{Data.price}.00/-</span>&nbsp;
-                        <span className="text-2xl text-gray-600 bg-gray-100 rounded-full px-2 py-1 hover:shadow-lg font-bold">
+                        <span className="text-xl text-gray-600 bg-gray-100 rounded-full px-2 py-1 hover:shadow-lg font-bold">
                             ₹{Math.floor(Data.price * ((100 - Data.Offer) / 100))}/-
                         </span>
                     </p>
@@ -233,8 +248,8 @@ function Detail(){
                     <div className="h-[1px] bg-gray-400 my-4" />
 
                     <div>
-                        <h3 className="text-xl font-semibold mb-2">Specifications</h3>
-                        <ol className="list-disc list-inside bg-white bg-opacity-30 rounded-xl p-4 text-sm space-y-1">
+                        <h3 className="text-base font-semibold mb-2">Specifications</h3>
+                        <ol className="list-disc list-inside bg-white bg-opacity-30 rounded-xl p-4 text-xs font-semibold space-y-1">
                         {Data.specifications.map((el, index) => (
                             <li key={index}>{el}</li>
                         ))}
@@ -258,13 +273,16 @@ function Detail(){
                 (
                     <>
                     <hr className="text-white m-4"></hr>
-                    <div className="ml-2 md:w-1/2  bg-purple-100 text-purple-600 rounded-full p-4">It's Your Product, you can edit and remove this from your inventory</div>
-                    <div className="selleroption bg-black row3 m-4 md:w-1/2 border border-white rounded-xl p-2">
-                        <ButtonGroup variant="contained" className="w-full" aria-label="Basic button group">
-                            <Button onClick={()=>{navigate(`/edit/${Data._id}`)}} sx={{backgroundColor: "yellow", color: "black", width: "50%"}} endIcon={<EditNoteRoundedIcon/>} >Edit item details</Button>
-                            <Button onClick={handelDeleteProduct} sx={{backgroundColor: "red", color: "white", width: "50%"}}  endIcon={<DeleteIcon/>}>Delete item from inventory</Button>
-                        </ButtonGroup>
-                </div>
+                    <div className="flex md:flex-row flex-col p-2">
+                        <div className="md:w-1/2 text-sm bg-green-100 text-green-600 m-2  rounded-full flex flex-wrap justify-center items-center">It's Your Product, you can edit and remove this from your inventory</div>
+                        <div className="selleroption bg-black row3 md:w-1/2 border border-white rounded-xl p-2">
+                            <ButtonGroup variant="contained" className="w-full " aria-label="Basic button group">
+                                <Button onClick={()=>{navigate(`/edit/${Data._id}`)}} sx={{backgroundColor: "yellow", color: "black", width: "50%", fontSize: '12px'}} endIcon={<EditNoteRoundedIcon/>} >Edit item details</Button>
+                                <Button onClick={handelDeleteProduct} sx={{backgroundColor: "red", color: "white", width: "50%", fontSize: '12px'}}  endIcon={<DeleteIcon/>}>Delete item from inventory</Button>
+                            </ButtonGroup>
+                        </div>
+                    </div>
+                    <hr className="text-white m-4"></hr>
                 </>
                 )
                 }
@@ -280,7 +298,7 @@ function Detail(){
                             </Stack>
                         </div>
                     </div>
-                    <form className="giverevire md:w-2/3  flex flex-col">
+                    <form className="giverevire md:w-2/3 text-sm flex flex-col">
                         <label htmlFor="revirew" className="text-white m-2">Some review</label>
                         <Rating name="size-medium" id="rating" value={reviewData.rating} onChange={handelChange} />
                         <span className="flex">
@@ -293,8 +311,8 @@ function Detail(){
                 </div>
 
                 <div className="row3 border border-white rounded-xl p-4 m-4">
-                    <div className="text-xl text-white">All reviews</div>
-                    <div className="allreview">
+                    <div className="text-lg text-white">All reviews</div>
+                    <div className="allreview text-sm">
                             {
                                 Data.review.map((rev)=>{
                                     return (
@@ -321,7 +339,7 @@ function Detail(){
                     </div>
                 </div>
 
-                <div className="row4 border border-white rounded-xl p-4 m-4">
+                <div className="row4 text-sm border border-white rounded-xl p-4 m-4">
                     {
                         Data.catagory?.length &&
                         <>{
@@ -336,6 +354,10 @@ function Detail(){
                 {
                     ask &&
                     <Confirm text={ask.text} fun={ask.fun} cancel={setAsk}></Confirm>
+                }
+                {
+                    render &&
+                    <Rendering></Rendering>
                 }
             </div>
         </>

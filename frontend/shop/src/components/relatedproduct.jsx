@@ -22,15 +22,15 @@ function RelatedProduct(props){
 
     return (
         <>
-            <span className="text-xl text-white">Related Products</span>
-            <div className="allproducts">
+            <span className="text-lg text-white">Related Products</span>
+            <div className="allproducts ">
                 {
                     data.map((el)=>{
                         return (
                             <>
                                 <a href={"/detail/"+el._id}>
-                                <div className="smallcard w-42 bg-[rgb(10,10,10,0.2)] text-sm text-white rounded-lg p-4 m-2">
-                                    <img className="h-36 w-36 rounded-lg" src={el.pictures[0]} alt="" />
+                                <div className="smallcard w-42 bg-[rgb(10,10,10,0.2)] text-xs text-white rounded-lg p-4 m-2">
+                                    <img className="h-36 w-36 rounded-lg" src={el.pictures[0].url} alt="" />
                                     <span>{el.name.length > 16 ? el.name.slice(0,14)+"..." : el.name}</span>
                                     <div>$ {el.price - el.price * el.Offer/100}/-</div>
                                 </div>

@@ -32,17 +32,20 @@ function Hero(){
                 return (
                     <>
                         <h1 className="text-xl font-bold p-1 text-center text-white  rounded">{el}</h1>
-                        <div className="flex flex-wrap bg-[rgba(255,255,255,1)] rounded-3xl p-2">
+                        <div className="flex flex-wrap bg-[rgba(0,0,0,0.35)] rounded-3xl p-2">
                         {
                             Data.filter((e)=>{ return e.catagory.indexOf(el) != -1 }).map((one)=>{
                                 return (
                                     <>
                                         <div
                                             onClick={() => goto(one._id)}
-                                            className="relative w-60 h-60 m-4 hover:scale-110 transition-transform duration-300 rounded-3xl overflow-hidden border border-gray-300 hover:border-white cursor-pointer group hover:shadow-lg"
+                                            className="relative w-60 h-60 m-4 transition-transform duration-300 rounded-3xl overflow-hidden cursor-pointer group hover:shadow-xl shadow-white"
                                         >
+                                            {
+                                                console.log(one.pictures[0].url.url)
+                                            }
                                         <img
-                                            src={one.pictures[0]}
+                                            src={one.pictures[0].url}
                                             alt="Product"
                                             className="w-full h-full object-cover rounded-3xl transition-transform duration-300 group-hover:scale-105"
                                         />

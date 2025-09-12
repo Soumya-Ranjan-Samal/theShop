@@ -3,10 +3,13 @@ import Product from '../models/product.js';
 import User from "../models/user.js";
 import Seller from "../models/seller.js";
 import jwt from "jsonwebtoken";
+import deleteImage from '../utils/deleteImageFromCloud.js';
+
 
 import { configDotenv } from 'dotenv';
 
 configDotenv();
+
 
 const secret = process.env.SECRET;
 
@@ -15,6 +18,20 @@ const productRoute = express.Router({mergeParams: true});
 productRoute.get("/",async (req,res)=>{
     let data = await Product.find({});
     res.send(data);
+});
+
+productRoute.delete('/image/:id', async  (req,res)=>{
+    if(await deleteImage(req.params.id)){
+        return res.send({
+            status: true,
+            message: "Image Deleted"
+        });
+    }else{
+        return res.send({
+            status: false,
+            message: "Some Error Occured, Pleaes Try Later!"
+        });
+    }
 });
 
 productRoute.get("/catagory/:value",async (req,res)=>{
@@ -46,12 +63,14 @@ productRoute.post("/", async (req,res)=>{
                 _id: productdata._id
             });
         }).catch((error)=>{
+            console.log('2',error)
             res.status(403).send({
                 message: "No updation occured in sellers account",
                 state: false,
             });
         })
     }).catch((error)=>{
+        console.log('1',error)
         res.status(500).send({
             error: "some error occured in saving the data",
             details: error
@@ -71,6 +90,14 @@ productRoute.delete("/:id/delete",async(req,res)=>{
     try{
         let result = jwt.verify(token, secret);
         await Product.findOneAndDelete({_id: req.params.id, sellerId: result._id}).then(async (data)=>{
+            console.log('hey');
+            for(let i of data.pictures){
+                console.log(i.publicId)
+                if(i.publicId != null){
+                    console.log(2);
+                    await deleteImage(i.publicId);
+                }
+            }
             await User.updateOne({_id: result._id},{$pull : {products : data._id}}).then(()=>{
                 res.send({
                     status: true,

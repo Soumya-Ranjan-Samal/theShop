@@ -6,7 +6,8 @@ const productSchema = mongoose.Schema({
         required: true,
     },
     pictures: [{
-        type: String,
+        url: String,
+        publicId: String,
     }],
     price: {
         type: String,
@@ -45,5 +46,7 @@ const productSchema = mongoose.Schema({
 
 
 const Product = mongoose.model("Product",productSchema);
+
+
 
 export default Product

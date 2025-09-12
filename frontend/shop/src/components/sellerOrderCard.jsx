@@ -87,7 +87,7 @@ function SellerOrderCard({ order, setAllOrder }) {
       
       <div className="flex gap-4 items-center hover:bg-gray-200 p-2 rounded-xl">
         <img
-          src={productId.pictures[0]}
+          src={productId.pictures[0].url}
           alt={productId.name}
           className="w-24 h-24 object-cover rounded-lg"
         />

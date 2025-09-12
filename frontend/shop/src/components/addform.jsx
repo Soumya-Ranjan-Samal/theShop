@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { formControlClasses, Tooltip } from "@mui/material";
+import Rendering from "./rendering";
 import Confirm from "./confirm";
 import axios from "axios";
 import "../App.css";
@@ -12,6 +13,7 @@ import "../App.css";
 function Addform(){
     const navigate = useNavigate();
 
+    let [render, setRender] = useState(false);
     let [picarray, setPicarray] = useState([]);
     let [picCount, setPicCount] = useState(0);
     let [specsArr, setspecsArr] = useState([]);
@@ -28,14 +30,6 @@ function Addform(){
 
     let catagory = ["Electronics", "Fashion", "Home & Kitchen", "Health & Wellness", "Toys & Kids", "Books & Stationery", "Automobile Accessories", "Sports & Outdoor", "Pet Supplies"]
 
-    function handelimagequantity(el){
-        let val = el.target.value;
-        let arr = picarray.splice(0,el.target.value);
-        for(let i=arr.length;i<val;i++){
-            arr.push("");
-        }
-        setPicarray(arr);
-    }
 
     function handelSpecsQuantity(el){
         let val = el.target.value;
@@ -85,10 +79,6 @@ function Addform(){
     });
     }
 
-    useEffect(()=>{
-        console.log(picarray);
-    },[picarray]);
-
     function handelImageDiscard(index){
         console.log(index);
         let field = document.querySelector('#imageFieldCollector');
@@ -113,7 +103,10 @@ function Addform(){
         formData.append('upload_preset', "theShopFrontendUpload");
         try{
             let res = await axios.post("https://api.cloudinary.com/v1_1/duwup3a7i/image/upload", formData);
-            return res.data.secure_url;
+            return {
+                url: res.data.secure_url,
+                publicId : res.data.public_id
+            };
         }catch(error){
             console.error("Upload failed:", err);
             return null;
@@ -123,33 +116,39 @@ function Addform(){
     function handelSubmit(){
         
         let send = async ()=>{
-
+            setRender(true);
             const uploadImage = async ()=>{
+                    console.log('here');
                     let uploadedImage = []
                     for(let i of picarray){
                         let url = await handelImageUpload(i.data);
+                        console.log(url);
                         if(url){
                             uploadedImage.push(url)
                         }
                     }
-                    setPicarray(uploadedImage);
+                return uploadedImage;
                 }
 
-            uploadImage();
-
-            await axios.post("http://localhost:3000/products",{
-                ...data,
-                pictures: picarray,
-                specifications:  specsArr,
-                catagory: cat
-            },{
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('mytoken')}`
-                }
-            }).then((res)=>{
-                    navigate("/detail/"+res.data._id)
+            uploadImage().then(async (uploadedImage)=>{
+                await axios.post("http://localhost:3000/products",{
+                    ...data,
+                    pictures: uploadedImage,
+                    specifications:  specsArr,
+                    catagory: cat
+                },{
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('mytoken')}`
+                    }
+                }).then((res)=>{
+                    navigate("/detail/"+res.data._id);
+                }).catch((error)=>{
+                    console.log(error);
+                    setRender(false)
+                });
             }).catch((error)=>{
                 console.log(error);
+                setRender(false)
             });
         }
         setAsk({
@@ -283,6 +282,10 @@ function Addform(){
                 {
                     ask &&
                     <Confirm text={ask.text} fun={ask.fun} cancel={setAsk}></Confirm>
+                }
+                {
+                    render &&
+                    <Rendering></Rendering>
                 }
             </div>
         </>

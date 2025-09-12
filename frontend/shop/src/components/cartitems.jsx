@@ -96,7 +96,7 @@ function CartItemCard({ item, Data, setData }) {
       
       <div className="w-[240px] h-[240px] bg-gray-100 rounded-xl hover:shadow-2xl flex items-center justify-center">
         <img
-          src={item.pictures[0]}
+          src={item.pictures[0].url}
           alt={item.name}
           className="object-contain w-full h-full p-4"
         />
