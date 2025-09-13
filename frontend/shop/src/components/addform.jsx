@@ -88,6 +88,7 @@ function Addform(){
                 setPicarray(el=> el.filter((e)=> e.id != index));
             }
         });
+        console.log(picarray);
     }
 
     function handelSpecsChange(el){
@@ -157,6 +158,10 @@ function Addform(){
         });
     }
 
+    useEffect(()=>{
+        console.log(picarray);
+    },[picarray]);
+
 
     return (
         <>
@@ -194,7 +199,7 @@ function Addform(){
                                 return (
                                     <div id={index} className="m-2 flex flex-row items-center justify-between md:w-1/3" key={index}>
                                         <input type="file" onChange={(el)=>handelimageChange(el, index)} className="border w-3/4 border-white rounded-xl p-2 inputstyle" />
-                                        <img src={picarray[index]?.url} alt="" className="h-10 w-12 rounded-lg border-2 border-white cover" />
+                                        <img src={picarray.filter(el => el.id == index)[0]?.url} alt="" className="h-10 w-12 rounded-lg border-2 border-white cover" />
                                         <Tooltip placement="right" title='Discard this field'>
                                             <button className="border-2 mx-1 hover:bg-[rgba(0,0,0,0.4)] border-white rounded-lg p-1" onClick={(el)=>{el.preventDefault();handelImageDiscard(index)}} ><DeleteRoundedIcon/></button>
                                         </Tooltip>

@@ -3,7 +3,7 @@ import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRound
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { useState } from "react";
 
-function ModifiableData({ data, name }) {
+function ModifiableData({ data, name, setData, useName, updateFun}) {
   const [edit, setEdit] = useState(false);
 
   return (
@@ -35,9 +35,15 @@ function ModifiableData({ data, name }) {
               label={"New " + name}
               size="small"
               variant="filled"
+              name={useName}
+              onChange={(el)=>{
+                setData((data)=>{
+                  return {...data, [useName]: el.target.value}
+                });
+              }}
             />
-            <Button className="bg-sky-500 text-white px-4 py-3 rounded-lg" >
-             Change
+            <Button className="bg-sky-500 text-white px-4 py-3 rounded-lg" title={useName} onClick={updateFun} >
+              Change
             </Button>
           </div>
         </div>

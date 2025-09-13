@@ -218,9 +218,7 @@ function Detail(){
                             Data.pictures.map((el,index)=>{
                                 let change = (el == Data.pictures[curPic])?  index+" m-1 mb-2 dot h-[10px] w-[10px] bg-white rounded-full" : index+" m-1 dot h-[10px] w-[10px] bg-white rounded-full opacity-20";
                                 return (
-                                    <>
-                                        <div onClick={dotchange} className={change}></div>
-                                    </>
+                                        <div onClick={dotchange} key={index} className={change}></div>
                                 )
                             })
                         }
@@ -314,9 +312,9 @@ function Detail(){
                     <div className="text-lg text-white">All reviews</div>
                     <div className="allreview text-sm">
                             {
-                                Data.review.map((rev)=>{
+                                Data.review.map((rev, index)=>{
                                     return (
-                                        <div className="revcard text-sm border border-gray-100 p-4 m-2 rounded-md bg-gray-100 text-gray-500 w-full md:w-[32%]">
+                                        <div key={index} className="revcard text-sm border border-gray-100 p-4 m-2 rounded-md bg-gray-100 text-gray-500 w-full md:w-[32%]">
                                             <div className="line1 flex justify-between">
                                                 <Rating  name="size-medium" defaultValue={rev.rating}  readOnly />
                                                 <span className="relative text-black top-[-5px]">
@@ -343,9 +341,9 @@ function Detail(){
                     {
                         Data.catagory?.length &&
                         <>{
-                            Data.catagory.map((el)=>{
+                            Data.catagory.map((el, index)=>{
                                 return (
-                                    <RelatedProduct catagory={el}/>
+                                    <RelatedProduct key={index} catagory={el}/>
                                 )
                             })
                         }</>

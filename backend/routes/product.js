@@ -20,16 +20,58 @@ productRoute.get("/",async (req,res)=>{
     res.send(data);
 });
 
-productRoute.delete('/image/:id', async  (req,res)=>{
-    if(await deleteImage(req.params.id)){
-        return res.send({
-            status: true,
-            message: "Image Deleted"
+productRoute.patch('/image/:productId', async  (req,res)=>{
+    let token = req.headers?.authorization?.split(' ')[1];
+    if(!token){
+        return res.status(400).send({
+            messgae: "Do log in first",
         });
-    }else{
-        return res.send({
-            status: false,
-            message: "Some Error Occured, Pleaes Try Later!"
+    }
+    try{
+        let tokenData = jwt.verify(token, secret);
+        let product = await Product.findOne({_id : req.params.productId});
+        if(!product){
+            return res.status(400).send({
+                messgae: "No such Product exits",
+                status: false,
+            });
+        }
+        if(product.sellerId != tokenData._id){
+            return res.status(400).send({
+                messgae: "You are not the owner",
+                status: false,
+            });
+        }
+        if(req.body.publicId != null){
+            if(await deleteImage(req.body.publicId)){
+                return res.send({
+                    status: true,
+                    message: "Image Deleted"
+                });
+            }else{
+                return res.send({
+                    status: false,
+                    message: "Some Error Occured, Pleaes Try Later!"
+                });
+            }
+        }
+        let newPicArr = []
+        for(let i of product.pictures){
+            if(i.url != req.body.url){
+                newPicArr.push(i)
+            }
+        }
+        product.pictures = newPicArr;
+        let newProduct = Product(
+            product
+        );
+        await newProduct.save();
+        return res.send({message: "Success", status: true});
+    }catch(error){
+        console.log(error);
+        return res.status(400).send({
+            message: "Do login first!",
+            status: false
         });
     }
 });
@@ -208,20 +250,26 @@ productRoute.patch("/:id",async (req,res)=>{
     let data = req.body;
     let product = await Product.findOne({_id: data._id});
     if(result._id == product.sellerId){
-    await Product.findOneAndUpdate({_id: req.params.id},data,{ new: true } ).populate("review").then((result)=>{
-        let avgrating = 0;
-        let len = result.review.length;
-        for(let i=0;i<len;i++){
-            avgrating+=result.review[i].rating;
+        let newPicArr = product.pictures;
+        for(let i of data.pictures){
+            newPicArr.push(i);
         }
-        res.status(200).send({...result._doc, avgrating: avgrating/len});
-    }).catch((error)=>{
-        console.log(error);
-        res.status(500).send({
-            error: true,
-            message: error
+        data.pictures=newPicArr;
+        let updatedProduct = Product(data);
+        await Product.findOneAndUpdate({_id: req.params.id},updatedProduct,{ new: true } ).populate("review").then((result)=>{
+            let avgrating = 0;
+            let len = result.review.length;
+            for(let i=0;i<len;i++){
+                avgrating+=result.review[i].rating;
+            }
+            res.status(200).send({...result._doc, avgrating: avgrating/len});
+        }).catch((error)=>{
+            console.log(error);
+            res.status(500).send({
+                error: true,
+                message: error
+            });
         });
-    });
     }else{
         res.status(403).send({
             message: "you are not the owner",
